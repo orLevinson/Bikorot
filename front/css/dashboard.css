@@ -1,0 +1,164 @@
+.frontDesc{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.hello svg{
+    padding: 0;
+    margin: 0!important;
+    height: 100%!important;
+    width: 100%!important;
+}
+
+.formItem{
+    display: flex;
+    align-items:flex-start;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.MuiSelect-filled{
+    background-color: white!important;
+    color: grey!important;
+}
+
+.MuiInput-underline:after {
+    border-color: #9c27b0!important;
+}
+
+.MuiFormLabel-root{
+direction: rtl;
+text-align: right;
+right: 0;
+}
+
+.MuiInputLabel-shrink {
+    transform-origin: top right!important;
+    color:#AAAAAA !important;
+}
+
+.MuiSelect-icon{
+    left:0;
+    right: auto!important;
+}
+
+.MuiListItem-root {
+    text-align: right!important;
+    justify-content: flex-end!important;
+}
+
+.MuiSelect-select.MuiSelect-select{
+    padding-right: 0!important;
+}
+
+.MuiFormControl-fullWidth{
+    margin-top: 27px!important;
+}
+
+.dragndrop{
+    width: 80%!important;
+    height: 100px!important;
+    border-radius: 0!important;
+    border: solid 1px #9c27b0!important;
+    box-shadow: 0 12px 20px -10px rgb(255 255 255 / 28%), 0 4px 20px 0px rgb(0 0 0 / 12%), 0 7px 8px -5px rgb(255 255 255 / 20%);
+}
+
+.dragndrop.green.marginTop{
+    border: solid 1px #29b027!important; 
+    margin: auto !important;
+    margin-top: 20px!important;
+}
+
+.dragndrop svg{
+    display: none;
+}
+
+.loginContainer{
+    min-height: calc(100vh - 123px);
+    width: 100%!important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.full-width{
+    width: 100%!important;
+}
+
+.MuiSnackbarContent-action{
+    padding-left: 0!important;
+    padding-right: 16px!important;
+}
+
+.SearchContainer{
+    color: rgba(0, 0, 0, 0.87);
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
+    padding: 5px 15px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.TabsCustomStyle{
+    font-size: 1.5rem!important;
+    margin-left: 20px!important;
+}
+
+.spacebetween{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.files li.no{
+ color: red;
+}
+
+.files li.yes{
+    color: green;
+}
+
+.unitsTable{
+    margin: auto;
+    width: 50%;
+    text-align: center!important;
+}
+
+.unitsTable div table thead tr th{
+    text-align: center;
+}
+
+.unitsTable div table tbody tr td{
+    text-align: center;
+}
+
+.selectFile{
+    width: 80%!important;
+    margin-right: auto!important;
+    margin-left: auto!important;
+}
+
+.padding{
+    padding:20px!important;
+}
+
+.noMargin div{
+    margin-top: 0!important;
+    margin: 0!important;
+    padding-bottom: 0!important;
+}
+
+.noMargin div label {
+    transform: none!important;
+}
+
+
+.noMargin div label.MuiInputLabel-shrink{
+    transform: translate(0,-10px) scale(0.75)!important;
+    transform-origin: top right!important;
+}
