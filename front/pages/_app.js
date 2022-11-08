@@ -72,10 +72,10 @@ export default class MyApp extends App {
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
           />
-          <title>מערכת פרסי קל"ר</title>
+          <title>מערכת ביקורות</title>
           <meta
           name="description"
-          content="מערכת הנועדה לתכלל את נושא הגשת מועמדות לטקס פרסי קלר השנתי ולניהולו"
+          content="מערכת הנועדה לתכלל את נושא שליחת הביקורות והצגתן בתחום ניהול המלאי"
           />
         </Head>
         <Layout>

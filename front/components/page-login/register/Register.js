@@ -116,11 +116,8 @@ const Register = (props) => {
                       color="warning"
                     />
                   ) : (
-                    "להתחברות לחצו כאן"
+                    "להרשמה לחצו כאן"
                   )}
-                </Button>
-                <Button color="rose" fullWidth>
-                  שכחתי סיסמא
                 </Button>
                 <Button
                   color="info"

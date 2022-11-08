@@ -91,7 +91,7 @@ export default function Sidebar(props) {
         <div className={classes.logoImage}>
           <img src={logo} style={{top:17,borderRadius:100}} alt="logo" className={classes.img} />
         </div>
-        מערכת פרסי קל"ר
+        ביקורות-ניהול המלאי
       </a>
     </div>
   );

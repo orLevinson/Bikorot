@@ -5,20 +5,20 @@ import Shield from "@material-ui/icons/VerifiedUser";
 
 const dashboardRoutes = [
   {
-    path: "",
-    name: "Dashboard",
-    rtlName: "דף הבית",
+    path: "/",
+    name: "Search",
+    rtlName: "מנוע חיפוש ביקורות",
     icon: Dashboard,
 
-    llayout: "/dashboard",
+    llayout: "/search",
   },
   {
-    path: "/auth",
+    path: "/",
     name: "Authentication",
     rtlName: "התחברות והרשמה",
     icon: Person,
 
-    layout: "/dashboard",
+    layout: "/auth",
   },
 ];
 
