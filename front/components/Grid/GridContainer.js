@@ -15,6 +15,9 @@ const styles = {
     width: "80%",
     margin: "auto!important",
   },
+  stretch:{
+    alignItems:"stretch"
+  }
 };
 
 
@@ -27,7 +30,7 @@ export default function GridContainer(props) {
       container
       {...rest}
       alignItems="stretch"
-      className={!!props.centered ? classes.gridCentered : classes.grid}
+      className={!!props.centered ? classes.gridCentered : classes.grid + " " + !!props.stretch ? classes.stretch : null}
     >
       {children}
     </Grid>
@@ -37,4 +40,5 @@ export default function GridContainer(props) {
 GridContainer.propTypes = {
   children: PropTypes.node,
   centered: PropTypes.bool,
+  stretch: PropTypes.bool
 };

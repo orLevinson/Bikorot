@@ -12,6 +12,13 @@ const cardBodyStyle = {
   cardBodyProfile: {
     marginTop: "15px",
   },
+  fullHeight: {
+    height: "inherit",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+  },
 };
 
 export default cardBodyStyle;

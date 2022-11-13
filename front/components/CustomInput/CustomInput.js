@@ -23,6 +23,7 @@ export default function CustomInput(props) {
     inputProps,
     error,
     success,
+    noMarginTop
   } = props;
 
   const labelClasses = classNames({
@@ -40,7 +41,7 @@ export default function CustomInput(props) {
   return (
     <FormControl
       {...formControlProps}
-      className={formControlProps.className + " " + classes.formControl}
+      className={formControlProps.className + " " + classes.formControl + " " + !!noMarginTop? classes.noMarginTop : null} 
     >
       {labelText !== undefined ? (
         <InputLabel
@@ -78,5 +79,6 @@ CustomInput.propTypes = {
   formControlProps: PropTypes.object,
   error: PropTypes.bool,
   success: PropTypes.bool,
-  type:PropTypes.string
+  type:PropTypes.string,
+  noMarginTop: PropTypes.bool
 };

@@ -1,0 +1,14 @@
+.datePicker{
+    width: inherit;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.datePicker label{
+    color: black;
+}
+
+.datePicker input{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

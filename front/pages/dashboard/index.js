@@ -14,9 +14,12 @@ import CardHeader from "../../components/Card/CardHeader";
 import GridContainer from "../../components/Grid/GridContainer";
 import Card from "../../components/Card/Card";
 import Table from "../../components/Table/Table";
+import Return from "@material-ui/icons/Redo";
 import { makeStyles } from "@material-ui/core";
 import CardBody from "../../components/Card/CardBody";
 import SearchBar from "../../components/search-page/searchBar/SearchBar";
+import CardWithValues from "../../components/dashboard-page/cardWithValues/CardWithValues";
+import RegularButton from "../../components/CustomButtons/Button";
 
 const styles = {
   cardCategoryWhite: {
@@ -83,35 +86,47 @@ function RTLPage(props) {
     <div>
       <GridContainer fullWidth>
         <GridItem xs={12} sm={12} md={12}>
-          <Card>
-            <CardHeader color={"primary"}>
-              <h3 className={classes.cardTitleWhite}>מנוע חיפוש ביקורות</h3>
-              <p className={classes.cardCategoryWhite}>
-                ניתן לחפש יחידה על פי שם יחידה, על פי שם יחידת אם(אוגדה,חטיבה או
-                פיקוד) ולפי טווח תאריכים
-              </p>
-            </CardHeader>
-            <CardBody>
-              <SearchBar/>
-              <Table
-                tableHeaderColor="primary"
-                tableHead={["Name", "Country", "City", "Salary"]}
-                tableData={[
-                  ["Dakota Rice", "Niger", "Oud-Turnhout", "$36,738"],
-                  ["Minerva Hooper", "Curaçao", "Sinaai-Waas", "$23,789"],
-                  ["Sage Rodriguez", "Netherlands", "Baileux", "$56,142"],
-                  ["Philip Chaney", "Korea, South", "Overland Park", "$38,735"],
-                  [
-                    "Doris Greene",
-                    "Malawi",
-                    "Feldkirchen in Kärnten",
-                    "$63,542",
-                  ],
-                  ["Mason Porter", "Chile", "Gloucester", "$78,615"],
-                ]}
-              />
-            </CardBody>
-          </Card>
+          <br />
+          <CardHeader color={"primary"}>
+            <h3 className={classes.cardTitleWhite}>דאשבורד מפקדים</h3>
+            <p className={classes.cardCategoryWhite}>
+              כאן ניתן להציג את ממוצעי היחידות עפ"י ממוצע שנתי. הממוצע מורכב
+              מכלל הביקורות של יחידות הבת שלהן במשך השנה האחרונה
+            </p>
+          </CardHeader>
+          <div style={{ position: "relative" }}>
+            <GridContainer fullWidth centered>
+              <div style={{ position: "absolute", top: 30, right: 15 }}>
+                <RegularButton color={"primary"}>
+                  <Return />
+                </RegularButton>
+              </div>
+              <GridItem xs={6} sm={4} md={4}>
+                <CardWithValues />
+              </GridItem>
+              <GridItem xs={6} sm={4} md={4}>
+                <CardWithValues />
+              </GridItem>
+              <GridItem xs={6} sm={4} md={4}>
+                <CardWithValues />
+              </GridItem>
+              <GridItem xs={6} sm={4} md={4}>
+                <CardWithValues />
+              </GridItem>
+              <GridItem xs={6} sm={4} md={4}>
+                <CardWithValues />
+              </GridItem>
+              <GridItem xs={6} sm={4} md={4}>
+                <CardWithValues />
+              </GridItem>
+              <GridItem xs={6} sm={4} md={4}>
+                <CardWithValues />
+              </GridItem>
+              <GridItem xs={6} sm={4} md={4}>
+                <CardWithValues />
+              </GridItem>
+            </GridContainer>
+          </div>
         </GridItem>
       </GridContainer>
     </div>

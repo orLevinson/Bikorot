@@ -16,7 +16,8 @@ import Card from "../../components/Card/Card";
 import Table from "../../components/Table/Table";
 import { makeStyles } from "@material-ui/core";
 import CardBody from "../../components/Card/CardBody";
-import SearchBar from "../../components/search-page/searchBar/SearchBar";
+import SearchBar from "../../components/reviewers-page/searchBar/SearchBar.js";
+import Button from "../../components/reviewers-page/button/Button";
 
 const styles = {
   cardCategoryWhite: {
@@ -47,6 +48,19 @@ const styles = {
     },
   },
 };
+
+const i = [
+  ["Dakota Rice", "Niger", "Oud-Turnhout", "$36,738"],
+  ["Minerva Hooper", "Curaçao", "Sinaai-Waas", "$23,789"],
+  ["Sage Rodriguez", "Netherlands", "Baileux", "$56,142"],
+  ["Philip Chaney", "Korea, South", "Overland Park", "$38,735"],
+  ["Doris Greene", "Malawi", "Feldkirchen in Kärnten", "$63,542"],
+  ["Mason Porter", "Chile", "Gloucester", "$78,615"],
+];
+
+for (const j of i) {
+  j.push(<Button />);
+}
 
 function RTLPage(props) {
   const useStyles = makeStyles(styles);
@@ -85,30 +99,17 @@ function RTLPage(props) {
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color={"primary"}>
-              <h3 className={classes.cardTitleWhite}>מנוע חיפוש ביקורות</h3>
+              <h3 className={classes.cardTitleWhite}>רשימת מבקרים</h3>
               <p className={classes.cardCategoryWhite}>
-                ניתן לחפש יחידה על פי שם יחידה, על פי שם יחידת אם(אוגדה,חטיבה או
-                פיקוד) ולפי טווח תאריכים
+              ניתן לחפש שמות מבקרים ע"י שם, מ"א. ניתן לשנות הרשאות ולחפש ביקורות של אותם המבקרים
               </p>
             </CardHeader>
             <CardBody>
-              <SearchBar/>
+              <SearchBar />
               <Table
                 tableHeaderColor="primary"
-                tableHead={["Name", "Country", "City", "Salary"]}
-                tableData={[
-                  ["Dakota Rice", "Niger", "Oud-Turnhout", "$36,738"],
-                  ["Minerva Hooper", "Curaçao", "Sinaai-Waas", "$23,789"],
-                  ["Sage Rodriguez", "Netherlands", "Baileux", "$56,142"],
-                  ["Philip Chaney", "Korea, South", "Overland Park", "$38,735"],
-                  [
-                    "Doris Greene",
-                    "Malawi",
-                    "Feldkirchen in Kärnten",
-                    "$63,542",
-                  ],
-                  ["Mason Porter", "Chile", "Gloucester", "$78,615"],
-                ]}
+                tableHead={["Name", "Country", "City", "Salary",'i']}
+                tableData={i}
               />
             </CardBody>
           </Card>

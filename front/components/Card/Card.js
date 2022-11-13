@@ -29,7 +29,8 @@ export default function Card(props) {
           ? { height: "calc(100% - 60px)" }
           : !!props.login
           ? { display: "flex", justifyContent: "center", alignItems: "center",textAlign:"center" }
-          : {}
+          : !!props.fullHeight ?
+          {height:"50%",flex:1} : {}
       }
       {...rest}
     >
@@ -46,4 +47,5 @@ Card.propTypes = {
   profile: PropTypes.bool,
   chart: PropTypes.bool,
   children: PropTypes.node,
+  fullHeight: PropTypes.bool
 };
