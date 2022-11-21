@@ -16,7 +16,7 @@ const SearchBar = () => {
         <GridContainer fullWidth>
           <GridItem xs={3} sm={3} md={3} flexCenter>
             <CustomInput
-              labelText="יחידה לחיפוש"
+              labelText="שם לחיפוש"
               type="unitname"
               inputProps={{}}
               id="passwordInput"
@@ -27,7 +27,7 @@ const SearchBar = () => {
           </GridItem>
           <GridItem xs={3} sm={3} md={3} flexCenter>
             <CustomInput
-              labelText="יחידת אם"
+              labelText="מספר אישי לחיפוש"
               type="parentunit"
               noMarginTop={true}
               inputProps={{}}
@@ -36,12 +36,6 @@ const SearchBar = () => {
                 fullWidth: true,
               }}
             />
-          </GridItem>
-          <GridItem xs={3} sm={3} md={3} flexCenter>
-            <div className="datePicker">
-              <label htmlFor="date">בוצעה מתאריך</label> &nbsp;&nbsp;&nbsp;
-              <input type="date" id="date"></input>
-            </div>
           </GridItem>
           <GridItem xs={3} sm={3} md={3} flexCenter>
           <CustomButton

@@ -1,0 +1,8 @@
+{
+  "env": {
+    "DB_USER": "tutututi",
+    "DB_PASSWORD": "goodPassword123",
+    "DB_NAME": "kalarPrize",
+    "JWT_KEY": "Ve1ryImp134ortant_PRoj1ect1"
+  }
+}

@@ -2,7 +2,8 @@ import Dashboard from "@material-ui/icons/Dashboard";
 import Person from "@material-ui/icons/Person";
 import Table from "@material-ui/icons/TableChart";
 import Speed from "@material-ui/icons/Speed";
-import Shield from "@material-ui/icons/VerifiedUser";
+import Note from "@material-ui/icons/Note";
+import Add from "@material-ui/icons/Add";
 
 const dashboardRoutes = [
   {
@@ -10,14 +11,14 @@ const dashboardRoutes = [
     name: "Search",
     rtlName: "מנוע חיפוש ביקורות",
     icon: Dashboard,
-    llyout: "/search",
+    layout: "/search",
   },
   {
     path: "/",
     name: "Authentication",
     rtlName: "התחברות והרשמה",
     icon: Person,
-    lyout: "/auth",
+    layout: "/auth",
   },
   {
     path: "/",
@@ -28,10 +29,24 @@ const dashboardRoutes = [
   },
   {
     path: "/",
-    name: "Reviewers",
-    rtlName: "מנוע חיפוש מבקרים",
+    name: "Managers",
+    rtlName: "חיפוש מבקרים",
     icon: Table,
+    layout: "/managers",
+  },
+  {
+    path: "/",
+    name: "Reviewers",
+    rtlName: "הביקורות שלי",
+    icon: Note,
     layout: "/reviewers",
+  },
+  {
+    path: "/",
+    name: "newReview",
+    rtlName: "ביקורת חדשה",
+    icon: Add,
+    layout: "/newReview",
   },
 ];
 

@@ -1,5 +1,3 @@
-import "../../../css/dashboard.css";
-
 import GridContainer from "../../Grid/GridContainer";
 import GridItem from "../../Grid/GridItem";
 import Card from "../../Card/Card";
@@ -9,6 +7,8 @@ import CustomInput from "../../CustomInput/CustomInput";
 import Button from "../../CustomButtons/Button";
 import { CircularProgress } from "@material-ui/core";
 import { useRef, useState } from "react";
+
+import "../../../css/dashboard.css";
 
 const Login = (props) => {
   const [disable, setDisable] = useState(false);

@@ -75,7 +75,7 @@ const customInputStyle = {
     verticalAlign: "unset",
   },
   noMarginTop: {
-    marginTop:0
+    marginTop:"0!important"
   }
 };
 

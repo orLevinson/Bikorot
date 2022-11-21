@@ -1,6 +1,5 @@
 /*eslint-disable*/
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 // @material-ui/core
 
 // @material-ui/icons
@@ -15,11 +14,10 @@ import CardHeader from "../../components/Card/CardHeader";
 import GridContainer from "../../components/Grid/GridContainer";
 import Card from "../../components/Card/Card";
 import Table from "../../components/Table/Table";
-import { Fab, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import CardBody from "../../components/Card/CardBody";
-import SearchBar from "../../components/reviewers-page/searchBar/SearchBar.js";
-import Button from "../../components/reviewers-page/button/Button";
-import Plus from "@material-ui/icons/Add";
+import SearchBar from "../../components/managers-page/searchBar/SearchBar.js";
+import Button from "../../components/managers-page/button/Button";
 
 const styles = {
   cardCategoryWhite: {
@@ -65,7 +63,6 @@ for (const j of i) {
 }
 
 function RTLPage(props) {
-  const router = useRouter();
   const useStyles = makeStyles(styles);
   const classes = useStyles();
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -97,47 +94,28 @@ function RTLPage(props) {
   // }, []);
 
   return (
-    <>
-      <div>
-        <GridContainer fullWidth>
-          <GridItem xs={12} sm={12} md={12}>
-            <Card>
-              <CardHeader color={"primary"}>
-                <h3 className={classes.cardTitleWhite}>עמוד הביקורות שלי</h3>
-                <p className={classes.cardCategoryWhite}>
-                  ניתן לחפש ביקורות ע"י שם יחידה, יחידת אם או תאריך. כמו גם,
-                  ניתן לערוך את הביקורות או למחוק אותן
-                </p>
-              </CardHeader>
-              <CardBody>
-                <SearchBar />
-                <Table
-                  tableHeaderColor="primary"
-                  tableHead={["Name", "Country", "City", "Salary", "i"]}
-                  tableData={i}
-                />
-              </CardBody>
-            </Card>
-          </GridItem>
-        </GridContainer>
-      </div>
-      <Fab
-        size="large"
-        id="Add Review"
-        variant="extended"
-        style={{
-          backgroundColor: "#00acc1",
-          color: "white",
-          position: "fixed",
-          left: 30,
-          bottom: 30,
-        }}
-        onClick={()=>{router.push("/newReview")}}
-      >
-        <Plus />
-        הוספת ביקורת
-      </Fab>
-    </>
+    <div>
+      <GridContainer fullWidth>
+        <GridItem xs={12} sm={12} md={12}>
+          <Card>
+            <CardHeader color={"primary"}>
+              <h3 className={classes.cardTitleWhite}>רשימת מבקרים</h3>
+              <p className={classes.cardCategoryWhite}>
+              ניתן לחפש שמות מבקרים ע"י שם, מ"א. ניתן לשנות הרשאות ולחפש ביקורות של אותם המבקרים
+              </p>
+            </CardHeader>
+            <CardBody>
+              <SearchBar />
+              <Table
+                tableHeaderColor="primary"
+                tableHead={["Name", "Country", "City", "Salary",'i']}
+                tableData={i}
+              />
+            </CardBody>
+          </Card>
+        </GridItem>
+      </GridContainer>
+    </div>
   );
 }
 
