@@ -24,8 +24,8 @@ const Login = (props) => {
               <h2>עמוד התחברות</h2>
               <p>נא להזין את הקוד הנדרש על מנת להתחבר לעמוד האדמינים</p>
               <CustomInput
-                labelText="שם משתמש"
-                type="username"
+                labelText="מספר אישי"
+                type="personalNum"
                 inputProps={{
                   inputRef: userRef,
                 }}
