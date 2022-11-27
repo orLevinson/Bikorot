@@ -24,14 +24,16 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PATCH, DELETE, OPTIONS"
+  );
 
   next();
 });
 
-
 // login/register/promote/demote/delete users routes
-app.use("/api/users",usersRoutes);
+app.use("/api/users", usersRoutes);
 
 app.use((req, res, next) => {
   const error = new HttpError("Could not find this route.", 404);
@@ -51,9 +53,14 @@ app.use((error, req, res, next) => {
     //check if respond already has been sent
     return next(error);
   }
+
+  console.log(error);
   //if code properties is set or default 500 => error code that something went wrong
   res.status(error.code || 500);
-  res.json({ message: error.message || "An unknown error occurred!" });
+  res.json({
+    message: error.message || "An unknown error occurred!",
+    success: !!error.success
+  });
 });
 
 mongoose

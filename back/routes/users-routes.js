@@ -6,11 +6,19 @@ const usersController = require("../middlewares/users-controller");
 
 const router = express.Router();
 
+// getting all users
+
+router.get("/allUsers",usersController.getAllUsers);
+
+//get one user data
+
+router.get("/:uid",usersController.getUser);
+
 // login
 
 router.post(
   "/login",
-  [check("name").not().isEmpty(), check("personalNum").not().isEmpty()],
+  [check("password").not().isEmpty(), check("personalNum").not().isEmpty()],
   usersController.login
 );
 
@@ -21,7 +29,7 @@ router.post(
   [
     check("name").not().isEmpty(),
     check("password").not().isEmpty(),
-    check("personalNum").isLength({ min: 5 }),
+    check("personalNum").isLength({ min: 6 }),
   ],
   usersController.register
 );
@@ -36,7 +44,7 @@ router.post(
 // reviewer - cannot change perms
 // regular - cannot change perms
 
-router.post(
+router.patch(
   "/perms/:uid",
   [check("perms").not().isEmpty()],
   usersController.changePerms
@@ -44,6 +52,6 @@ router.post(
 
 // delete
 // only allowed by global/manager perms users
-router.delete("/:uid", jobsController.delete);
+router.delete("/:uid", usersController.delete);
 
 module.exports = router;
