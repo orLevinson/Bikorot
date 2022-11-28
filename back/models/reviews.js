@@ -252,4 +252,4 @@ const unitSchema = new Schema({
 
 unitSchema.plugin(arrayValidator);
 
-module.exports = mongoose.model("Unit", unitSchema);
+module.exports = mongoose.model("Review", unitSchema);
