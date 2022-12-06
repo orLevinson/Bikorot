@@ -1,7 +1,7 @@
 const express = require("express");
 const { check } = require("express-validator");
 const fileUpload = require("../middlewares/file-upload");
-const multer = require('multer');
+const multer = require("multer");
 // const checkAuth = require("../middlewares/check-auth");
 
 const infoController = require("../middlewares/info-controller");
@@ -54,7 +54,7 @@ router.patch(
         if (value.reduce((a, b) => a + b, 0) !== 100) {
           throw new Error("the total sum isnt 100%");
         }
-        if(value.some(i => i < 0) || value.some(i => i > 100)){
+        if (value.some((i) => i < 0) || value.some((i) => i > 100)) {
           throw new Error("some of the fields represent an invalid value");
         }
         return true;

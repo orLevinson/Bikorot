@@ -121,7 +121,9 @@ const blankInfo = (id) => {
         files: new Array(3).fill(id),
         percentage: 2,
       },
-      category4: {
+    },
+    subject6: {
+      category1: {
         files: new Array(11).fill(id),
         percentage: 12,
       },

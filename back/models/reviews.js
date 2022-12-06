@@ -1,15 +1,21 @@
 const mongoose = require("mongoose");
 var arrayValidator = require("mongoose-array-validator");
+const autoPopulate = require("mongoose-autopopulate");
 
 const Schema = mongoose.Schema;
 
 const unitSchema = new Schema({
   dateCreated: { type: Date, required: true },
   author: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
-  unit: { type: mongoose.Types.ObjectId, required: true, ref: "Unit" },
+  unit: {
+    type: mongoose.Types.ObjectId,
+    required: true,
+    ref: "Unit",
+    autopopulate: true,
+  },
   command: { type: mongoose.Types.ObjectId, required: true, ref: "Command" },
-  division: { type: mongoose.Types.ObjectId, required: true, ref: "Division" },
-  brigade: { type: mongoose.Types.ObjectId, required: true, ref: "Brigade" },
+  division: { type: mongoose.Types.ObjectId, ref: "Division" },
+  brigade: { type: mongoose.Types.ObjectId, ref: "Brigade" },
   scores: {
     subject1: {
       category1: {
@@ -216,7 +222,9 @@ const unitSchema = new Schema({
         minItems: 3,
         maxItems: 3,
       },
-      category4: {
+    },
+    subject6: {
+      category1: {
         type: [
           { score: { type: Number, required: true }, text: { type: String } },
         ],
@@ -251,5 +259,6 @@ const unitSchema = new Schema({
 });
 
 unitSchema.plugin(arrayValidator);
+unitSchema.plugin(autoPopulate);
 
 module.exports = mongoose.model("Review", unitSchema);

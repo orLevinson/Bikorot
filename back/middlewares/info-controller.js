@@ -20,7 +20,7 @@ const checkIfInfoExist = async (req, res, next) => {
   try {
     info = await Info.findOne();
   } catch (err) {
-    const error = new HttpError(err, 500);
+    const error = new HttpError("unknown error occured", 500);
     return next(error);
   }
 
@@ -45,8 +45,6 @@ const checkIfInfoExist = async (req, res, next) => {
     }
   }
 
-  console.log(info);
-
   next();
 };
 
@@ -57,7 +55,7 @@ const getAllFiles = async (req, res, next) => {
     info = await Info.findOne();
     info = info.toObject({ getters: true });
   } catch (err) {
-    const error = new HttpError(err, 500);
+    const error = new HttpError("unknown error occured", 500);
     return next(error);
   }
 
@@ -205,12 +203,10 @@ const changePercentages = async (req, res, next) => {
     }
   }
 
-  console.log(info);
-
   try {
     await info.save();
   } catch (err) {
-    const error = new HttpError(err, 500);
+    const error = new HttpError("unknown error occured", 500);
     return next(error);
   }
 

@@ -7,13 +7,15 @@ const mongoose = require("mongoose");
 
 const usersRoutes = require("./routes/users-routes");
 const infoRoutes = require("./routes/info-routes");
+const reviewsRoutes = require("./routes/reviews-routes");
+const unitsRoutes = require("./routes/units-routes");
 
 const HttpError = require("./models/http-error");
 
 const app = express();
 
 //Parse any incoming request body and extract any json data that is in there converted to regular javascript data structure (object,array...) and than call next autometically to reach the next middleware inline
-app.use(bodyParser.urlencoded({ extended: true })); 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 //return the file path
@@ -36,7 +38,11 @@ app.use((req, res, next) => {
 
 // login/register/promote/demote/delete users routes
 app.use("/api/users", usersRoutes);
-app.use("/api/info",infoRoutes);
+app.use("/api/info", infoRoutes);
+app.use("/api/reviews", reviewsRoutes);
+
+// only a test route
+app.use("/api/units",unitsRoutes);
 
 app.use((req, res, next) => {
   const error = new HttpError("Could not find this route.", 404);
@@ -62,7 +68,7 @@ app.use((error, req, res, next) => {
   res.status(error.code || 500);
   res.json({
     message: error.message || "An unknown error occurred!",
-    success: !!error.success
+    success: !!error.success,
   });
 });
 

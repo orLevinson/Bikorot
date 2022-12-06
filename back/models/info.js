@@ -294,7 +294,9 @@ const infoSchema = new Schema({
       },
       percentage: { type: Number },
     },
-    category4: {
+  },
+  subject6: {
+    category1: {
       files: {
         type: [
           { type: mongoose.Types.ObjectId, ref: "File", autopopulate: true },
