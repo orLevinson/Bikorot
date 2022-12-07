@@ -7,6 +7,7 @@ const unitsController = require("../middlewares/units-controller");
 const router = express.Router();
 
 // only a test route for now
+// everyone can get this data
 
 router.get("/", unitsController.getAllUnits);
 

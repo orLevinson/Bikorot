@@ -2,9 +2,10 @@ const express = require("express");
 const { check } = require("express-validator");
 const fileUpload = require("../middlewares/file-upload");
 const multer = require("multer");
-// const checkAuth = require("../middlewares/check-auth");
+const checkAuth = require("../middlewares/check-auth");
 
 const infoController = require("../middlewares/info-controller");
+const validationController = require("../middlewares/validation-controller");
 
 const router = express.Router();
 
@@ -25,11 +26,13 @@ router.get(
 );
 
 // only admins & global perms allowed to preform the following tasks
+router.use(checkAuth);
 
 //change one file
 
 router.patch(
   "/changeFile",
+  validationController.checkGlobalOrManager,
   infoController.checkIfInfoExist,
   fileUpload.single("file"),
   [
@@ -44,6 +47,7 @@ router.patch(
 // get an 29 items array which their total value equals 100%
 router.patch(
   "/changePercentages",
+  validationController.checkGlobalOrManager,
   [
     check("values")
       .isArray()

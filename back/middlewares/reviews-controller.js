@@ -117,9 +117,9 @@ const checkUserAuthNew = async (req, res, next) => {
   if (!user || !user.perms) {
     const error = new HttpError("You aren't authorized to add a review", 401);
     return next(error);
+  } else {
+    next();
   }
-
-  next();
 };
 
 const addReview = async (req, res, next) => {

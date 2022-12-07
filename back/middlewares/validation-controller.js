@@ -10,16 +10,16 @@ const User = require("../models/users");
 
 // check if the user that commiting the procedure is a manager or gloabl
 const checkGlobalOrManager = async (req, res, next) => {
-  let userId = !!req.userData ? req.userData.id : null;
+  let adminId = !!req.userData ? req.userData.id : null;
 
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
+  if (!mongoose.Types.ObjectId.isValid(adminId)) {
     const error = new HttpError("Authorization failed", 403);
     return next(error);
   }
 
   let user;
   try {
-    user = await User.findOne({ _id: userId });
+    user = await User.findOne({ _id: adminId });
   } catch (err) {
     const error = new HttpError("Authorization failed", 403);
     return next(error);
@@ -40,16 +40,17 @@ const checkGlobalOrManager = async (req, res, next) => {
 
 // check if the user that commiting the procedure is a manager or gloabl or it is his own data
 const checkGlobalOrManagerOrPersonal = async (req, res, next) => {
-  let userId = !!req.userData ? req.userData.id : null;
+  let adminId = !!req.userData ? req.userData.id : null;
+  let userId = req.params.uid;
 
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
+  if (!mongoose.Types.ObjectId.isValid(adminId)) {
     const error = new HttpError("Authorization failed", 403);
     return next(error);
   }
 
   let user;
   try {
-    user = await User.findOne({ _id: userId });
+    user = await User.findOne({ _id: adminId });
   } catch (err) {
     const error = new HttpError("Authorization failed", 403);
     return next(error);
@@ -61,15 +62,15 @@ const checkGlobalOrManagerOrPersonal = async (req, res, next) => {
   }
 
   if (
-    user.perms !== "global" &&
-    user.perms !== "manager" &&
-    !user._id.equals(userId)
+    user.perms === "global" ||
+    user.perms === "manager" ||
+    user._id.equals(userId)
   ) {
+    next();
+  } else {
     const error = new HttpError("You lack the necessary permissions", 401);
     return next(error);
   }
-
-  next();
 };
 
 exports.checkGlobalOrManager = checkGlobalOrManager;

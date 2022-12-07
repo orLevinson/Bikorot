@@ -206,7 +206,6 @@ const register = async (req, res, next) => {
   });
 };
 
-// need to change so managers cant promote others to managers
 const changePerms = async (req, res, next) => {
   // checks if the password,personalNum and name validation was fulfilled(the validation rules were declared in the users router)
   const errors = validationResult(req);
