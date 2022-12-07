@@ -34,18 +34,21 @@ const getUser = async (req, res, next) => {
   try {
     user = await User.findById(UserId, "name personalNum _id perms");
   } catch (err) {
-    const error = new HttpError("getting usfdsaers failed, please try again", 500);
+    const error = new HttpError(
+      "getting usfdsaers failed, please try again",
+      500
+    );
     return next(error);
   }
 
-  if(!user){
+  if (!user) {
     const error = new HttpError("No user was found", 500);
     return next(error);
   }
 
   res.json({
     success: true,
-    user
+    user,
   });
 };
 
@@ -95,7 +98,7 @@ const login = async (req, res, next) => {
   try {
     token = jwt.sign(
       {
-        personalNum,
+        id: user._id,
       },
       process.env.JWT_KEY, //process.env.JWT_KEY is taken from nodemon.json
       { expiresIn: "1w" }
@@ -170,8 +173,7 @@ const register = async (req, res, next) => {
     await newUser.save();
   } catch (err) {
     const error = new HttpError(
-      // "Registeration failed, please try again later.",
-      err,
+      "Registeration failed, please try again later.",
       500
     );
     return next(error);
@@ -182,7 +184,7 @@ const register = async (req, res, next) => {
   try {
     token = jwt.sign(
       {
-        personalNum,
+        id: newUser._id,
       },
       process.env.JWT_KEY, //process.env.JWT_KEY is taken from nodemon.json
       { expiresIn: "1w" }
@@ -204,6 +206,7 @@ const register = async (req, res, next) => {
   });
 };
 
+// need to change so managers cant promote others to managers
 const changePerms = async (req, res, next) => {
   // checks if the password,personalNum and name validation was fulfilled(the validation rules were declared in the users router)
   const errors = validationResult(req);
@@ -228,6 +231,34 @@ const changePerms = async (req, res, next) => {
     );
   }
 
+  if (perms === "manager") {
+    const adminId = req.userData.id;
+    let adminObj;
+    try {
+      adminObj = await User.findOne({ _id: adminId });
+    } catch (err) {
+      const error = new HttpError(
+        "Changing perms failed, please try again",
+        500
+      );
+      return next(error);
+    }
+    if (!adminObj) {
+      const error = new HttpError(
+        "Changing perms failed, please try again",
+        500
+      );
+      return next(error);
+    }
+    if (adminObj.perms !== "global") {
+      const error = new HttpError(
+        "You do not have the permission to do this",
+        401
+      );
+      return next(error);
+    }
+  }
+
   // pull the specified user object
   let user;
   try {
@@ -242,6 +273,7 @@ const changePerms = async (req, res, next) => {
     return next(error);
   }
 
+  // if the admin tries to change the user's permission to ones he already have
   if (user.perms === perms) {
     const error = new HttpError(
       "The user already had the same perms",

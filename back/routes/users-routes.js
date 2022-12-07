@@ -1,18 +1,12 @@
 const express = require("express");
 const { check } = require("express-validator");
-// const checkAuth = require("../middlewares/check-auth");
+// get the token as userData
+const checkAuth = require("../middlewares/check-auth");
 
 const usersController = require("../middlewares/users-controller");
+const validationController = require("../middlewares/validation-controller");
 
 const router = express.Router();
-
-// getting all users
-
-router.get("/allUsers",usersController.getAllUsers);
-
-//get one user data
-
-router.get("/:uid",usersController.getUser);
 
 // login
 
@@ -35,6 +29,24 @@ router.post(
 );
 
 // only admins & global perms allowed to preform the following tasks
+router.use(checkAuth);
+
+// getting all users
+
+router.get(
+  "/allUsers",
+  validationController.checkGlobalOrManager,
+  usersController.getAllUsers
+);
+
+//get one user data
+// only by admins & globals or by the person it belongs himself
+
+router.get(
+  "/:uid",
+  validationController.checkGlobalOrManagerOrPersonal,
+  usersController.getUser
+);
 
 // promote/demote
 // will provide token which will validate if promotion/demotion is possible
@@ -47,11 +59,16 @@ router.post(
 router.patch(
   "/perms/:uid",
   [check("perms").not().isEmpty()],
+  validationController.checkGlobalOrManager,
   usersController.changePerms
 );
 
 // delete
 // only allowed by global/manager perms users
-router.delete("/:uid", usersController.delete);
+router.delete(
+  "/:uid",
+  validationController.checkGlobalOrManager,
+  usersController.delete
+);
 
 module.exports = router;
