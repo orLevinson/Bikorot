@@ -1,11 +1,12 @@
 const express = require("express");
 const { check } = require("express-validator");
 const fileUpload = require("../middlewares/file-upload");
-// const checkAuth = require("../middlewares/check-auth");
+const checkAuth = require("../middlewares/check-auth");
 
 const reviewsController = require("../middlewares/reviews-controller");
 // if there is no info Obj while creating a new review ->
 const infoController = require("../middlewares/info-controller");
+const validationController = require("../middlewares/validation-controller");
 
 const router = express.Router();
 
@@ -28,8 +29,10 @@ router.get("/", reviewsController.getReviewsByFilters);
 router.get("/:aid", reviewsController.getReviewsByAuthor);
 
 // only admins & global perms allowed to preform the following tasks
+router.use(checkAuth);
 
 // add a new review
+// can be done by admins/globals/reviewers
 router.post(
   "/newReview",
   [
@@ -37,6 +40,7 @@ router.post(
     check("unit").not().isEmpty(),
     check("command").not().isEmpty(),
   ],
+  validationController.checkGlobalOrManagerOrReviewer,
   reviewsController.checkUserAuthNew,
   // need to be changed to use the token instead of body
   infoController.checkIfInfoExist,
@@ -62,10 +66,10 @@ router.post(
 router.patch(
   "/:rid",
   [
-    check("user").not().isEmpty(),
     check("unit").not().isEmpty(),
     check("command").not().isEmpty(),
   ],
+  validationController.checkGlobalOrManagerOrReviewer,
   reviewsController.checkUserAuthEdit,
   reviewsController.editReview
 );
@@ -87,7 +91,7 @@ router.patch(
 
 router.delete(
   "/:rid",
-  [check("user").not().isEmpty()],
+  validationController.checkGlobalOrManagerOrReviewer,
   reviewsController.checkUserAuthEdit,
   reviewsController.deleteReview
 );

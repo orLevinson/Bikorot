@@ -105,6 +105,8 @@ const checkUserAuthNew = async (req, res, next) => {
     );
   }
 
+  const adminId = !!req.userData ? req.userData.id : null;
+
   const reviewInfo = req.body;
   let user;
   try {
@@ -114,7 +116,7 @@ const checkUserAuthNew = async (req, res, next) => {
     return next(error);
   }
 
-  if (!user || !user.perms) {
+  if (!user || !user._id.equals(adminId)) {
     const error = new HttpError("You aren't authorized to add a review", 401);
     return next(error);
   } else {
@@ -472,6 +474,7 @@ const checkUserAuthEdit = async (req, res, next) => {
     );
   }
 
+  const adminId = !!req.userData ? req.userData.id : null;
   const reviewId = req.params.rid;
 
   let review;
@@ -482,11 +485,9 @@ const checkUserAuthEdit = async (req, res, next) => {
     return next(error);
   }
 
-  const { user: userId } = req.body;
-
   let user;
   try {
-    user = await User.findById(userId);
+    user = await User.findById(adminId);
   } catch (err) {
     const error = new HttpError("unknown error occured", 500);
     return next(error);
