@@ -39,6 +39,8 @@ const checkIfInfoExist = async (req, res, next) => {
         newInfo.save({ session: sess }),
       ]);
       await sess.commitTransaction(); //only now the changes will apply in the database
+
+      await sess.endSession();
     } catch (err) {
       const error = new HttpError("unknown error occured", 500);
       return next(error);
@@ -164,6 +166,8 @@ const changeFile = async (req, res, next) => {
       fileObj.save({ session: sess }),
     ]);
     await sess.commitTransaction(); //only now the changes will apply in the database
+
+    await sess.endSession();
   } catch (err) {
     return next(
       new HttpError("Could not change the file,please try again later", 500)

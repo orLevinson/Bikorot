@@ -36,8 +36,6 @@ router.post(
     check("author").not().isEmpty(),
     check("unit").not().isEmpty(),
     check("command").not().isEmpty(),
-    check("division").not().isEmpty(),
-    check("brigade").not().isEmpty(),
   ],
   reviewsController.checkUserAuthNew,
   // need to be changed to use the token instead of body
@@ -47,6 +45,34 @@ router.post(
 // input looks like this
 // {
 // author : id,
+// unit : id,
+// command : id,
+// division : id/null,
+// bridage : id/null,
+// scores : obj
+// Summary : as shown in the example
+// }
+
+// edit a review
+// can only be preformed by a manager/global or
+// the author of the review.
+// the input is identical to the input of the
+// new review except you can not change the
+
+router.patch(
+  "/:rid",
+  [
+    check("user").not().isEmpty(),
+    check("unit").not().isEmpty(),
+    check("command").not().isEmpty(),
+  ],
+  reviewsController.checkUserAuthEdit,
+  reviewsController.editReview
+);
+
+// input looks like this
+// {
+// user : id,
 // unit : id,
 // command : id,
 // division : id/null,
