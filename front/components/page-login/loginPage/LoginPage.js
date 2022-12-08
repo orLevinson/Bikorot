@@ -1,39 +1,30 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Login from "../Login/Login";
 import Snackbar from "../../Snackbar/Snackbar";
 import Register from "../register/Register";
+import { contextData } from "../../../context/context";
 
 const LoginPage = (props) => {
   const [type, setType] = useState("login");
+  const Context = useContext(contextData);
 
-  const loginHandler = async (password) => {
+  console.log(Context);
+
+  const loginHandler = async (personalNum, password) => {
     try {
-      const response = await props.sendRequest(
-        process.env.NEXT_PUBLIC_API_ADDRESS + "api/misc/login",
-        "POST",
-        JSON.stringify({ password }),
-        { "Content-Type": "application/json" }
-      );
-
-      if (!!response.message && !!response.message.success) {
-        props.setLoggedIn(true);
-        props.setToken(response.message.token);
-        localStorage.setItem("token", response.message.token);
-        localStorage.setItem(
-          "expiresIn",
-          new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
-        );
-      }
+      await Context.login(personalNum, password);
     } catch (error) {
-      props.openModal("danger", "ההתחברות נכשלה, סיסמא שגויה");
+      props.openModal("danger", "ההתחברות נכשלה, פרטים שגויים");
       props.setLoggedIn(false);
       props.clearError();
     }
   };
   return (
     <div>
-      {type === "login" && <Login login={loginHandler} typeSet={setType}/>}
-      {type === "register" && <Register login={loginHandler} typeSet={setType}/>}
+      {type === "login" && <Login login={loginHandler} typeSet={setType} />}
+      {type === "register" && (
+        <Register login={loginHandler} typeSet={setType} />
+      )}
       {/* {type === "login" ?? <Login login={loginHandler} />} */}
       <Snackbar
         place="bl"

@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 
 const unitSchema = new Schema({
   dateCreated: { type: Date, required: true },
-  author: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
+  author: { type: mongoose.Types.ObjectId, required: true, ref: "User"},
   unit: {
     type: mongoose.Types.ObjectId,
     required: true,

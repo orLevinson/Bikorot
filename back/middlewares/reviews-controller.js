@@ -22,25 +22,33 @@ const getReviewsByFilters = async (req, res, next) => {
   let reviews = [];
   if (!date && !unit) {
     try {
-      reviews = await Review.find().sort({ _id: -1 }).limit(10);
+      reviews = await Review.find()
+        .populate({ path: "author", select: "name" })
+        .sort({ _id: -1 })
+        .limit(10);
     } catch (err) {
       const error = new HttpError("unknown error occured", 500);
       return next(error);
     }
-
-    res.json({ success: true, reviews });
   }
 
   if (unit) {
     let units;
     try {
-      units = await Unit.find({ name: { $regex: unit } }).populate("reviews");
+      units = await Unit.find({ name: { $regex: unit } }).populate({
+        path: "reviews",
+        populate: {
+          path: "author",
+          select: "name",
+        },
+      });
     } catch (err) {
       const error = new HttpError("unknown error occured", 500);
       return next(error);
     }
 
     units.forEach((i) => {
+      console.log(i);
       const reviewObjects = i.reviews.map((r) => r.toObject({ getters: true }));
       reviews = [...reviews, ...reviewObjects];
     });
@@ -48,17 +56,12 @@ const getReviewsByFilters = async (req, res, next) => {
 
   if (date && !unit) {
     try {
-      reviews = await Review.aggregate([
-        {
-          $match: {
-            dateCreated: {
-              $gte: dateObj,
-            },
-          },
-        },
-      ]);
+      reviews = await Review.find({ dateCreated: { $gte: dateObj } }).populate({
+        path: "author",
+        select: "name",
+      });
     } catch (err) {
-      const error = new HttpError("unknown error occured", 500);
+      const error = new HttpError(err, 500);
       return next(error);
     }
   }
@@ -73,7 +76,7 @@ const getReviewsByFilters = async (req, res, next) => {
     });
   }
 
-  res.json({ success: true, reviews });
+  res.json({ success: true, reviews: reviews });
 };
 
 const getReviewsByAuthor = async (req, res, next) => {

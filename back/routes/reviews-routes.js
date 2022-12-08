@@ -18,8 +18,9 @@ const router = express.Router();
 // get scores - a tree of units with 2 kinds of scores - reviewers' score and managers' score
 
 // getting reviews by filters
-
-router.get("/", reviewsController.getReviewsByFilters);
+// there is an annoying bug in JS that dont allow me to have
+// body inside a GET req, so I changed it to post
+router.post("/filter", reviewsController.getReviewsByFilters);
 // input looks like this
 // {
 //     date : dateObj,

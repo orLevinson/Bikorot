@@ -22,9 +22,9 @@ import Head from "next/head";
 import Router from "next/router";
 
 import PageChange from "components/PageChange/PageChange.js";
+import {ContextProvider} from "../context/context";
 
 import "assets/css/nextjs-material-dashboard.css?v=1.1.0";
-
 
 console.log("test");
 Router.events.on("routeChangeStart", (url) => {
@@ -67,20 +67,22 @@ export default class MyApp extends App {
 
     return (
       <React.Fragment>
-        <Head>
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
-          />
-          <title>מערכת ביקורות</title>
-          <meta
-          name="description"
-          content="מערכת הנועדה לתכלל את נושא שליחת הביקורות והצגתן בתחום ניהול המלאי"
-          />
-        </Head>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <ContextProvider>
+          <Head>
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            />
+            <title>מערכת ביקורות</title>
+            <meta
+              name="description"
+              content="מערכת הנועדה לתכלל את נושא שליחת הביקורות והצגתן בתחום ניהול המלאי"
+            />
+          </Head>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </ContextProvider>
       </React.Fragment>
     );
   }

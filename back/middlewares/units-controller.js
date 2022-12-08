@@ -162,8 +162,8 @@ const getAverages = async (req, res, next) => {
     const reviewerAvg = reviewerMadeScores.find((i) => unit._id.equals(i._id));
     // creating a better object with more data
     const newUnitObj = {
-      unitId: unit._id,
-      unitName: unit.name,
+      id: unit._id,
+      name: unit.name,
       commandId: unit.command,
       divisionId: unit.division,
       brigadeId: unit.brigade,
@@ -172,7 +172,7 @@ const getAverages = async (req, res, next) => {
     };
     // pushing the unit's obj to the units level object with
     // the unit's ID as its key
-    unitsLevelWithAveragesObj[newUnitObj.unitId] = newUnitObj;
+    unitsLevelWithAveragesObj[newUnitObj.id] = newUnitObj;
   }
 
   // brigades level
@@ -193,10 +193,10 @@ const getAverages = async (req, res, next) => {
   for (const brigade of allBrigades) {
     // better brigade Obj that includes the average scores
     const newBrigadeObj = {
-      brigadeId: brigade._id,
-      brigadeName: brigade.name,
-      parentDivision: brigade.parentDivision,
-      units: [],
+      id: brigade._id,
+      name: brigade.name,
+      parentId: brigade.parentDivision,
+      directUnits: [],
       managerAvg: 0,
       reviewerAvg: 0,
     };
@@ -216,17 +216,26 @@ const getAverages = async (req, res, next) => {
           ? unitObjWithAverages.reviewerAvg
           : 0;
         // add the unit level's unit obj to the new brigade's units array
-        newBrigadeObj.units.push(unitObjWithAverages);
+        newBrigadeObj.directUnits.push(unitObjWithAverages);
       }
     });
     // do an average of the scores of the units with the following
     // formula : sum of the scores of all the units / num of units = avg score
-    newBrigadeObj.managerAvg =
-      newBrigadeObj.managerAvg / newBrigadeObj.units.length;
-    newBrigadeObj.reviewerAvg =
-      newBrigadeObj.reviewerAvg / newBrigadeObj.units.length;
+    // i do not count the units that have score of 0 in the num of units
+    let numOfUnitsReviewers = 0;
+    let numOfUnitsManagers = 0;
+    for (let i = 0; i < newBrigadeObj.directUnits.length; i++) {
+      if (newBrigadeObj.directUnits[i].managerAvg > 0) {
+        numOfUnitsManagers++;
+      }
+      if (newBrigadeObj.directUnits[i].reviewerAvg > 0) {
+        numOfUnitsReviewers++;
+      }
+    }
+    newBrigadeObj.managerAvg = newBrigadeObj.managerAvg / numOfUnitsManagers;
+    newBrigadeObj.reviewerAvg = newBrigadeObj.reviewerAvg / numOfUnitsReviewers;
     // add the brigade obj to the brigade level obj with the brigade's ID as a key
-    brigadesLevelWithAveragesObj[newBrigadeObj.brigadeId] = newBrigadeObj;
+    brigadesLevelWithAveragesObj[newBrigadeObj.id] = newBrigadeObj;
   }
 
   // divisions level
@@ -247,10 +256,10 @@ const getAverages = async (req, res, next) => {
   for (const division of allDivisions) {
     // better division Obj that includes the average scores
     const newDivisionObj = {
-      divisionId: division._id,
-      divisionName: division.name,
-      parentCommand: division.parentCommand,
-      brigades: [],
+      id: division._id,
+      name: division.name,
+      parentId: division.parentCommand,
+      unitsUnder: [],
       directUnits: [],
       managerAvg: 0,
       reviewerAvg: 0,
@@ -263,7 +272,7 @@ const getAverages = async (req, res, next) => {
       // exists in the unit level object
       if (!!brigadeObjWithAverages) {
         // add the brigade level's brigade obj to the new division's brigades array
-        newDivisionObj.brigades.push(brigadeObjWithAverages);
+        newDivisionObj.unitsUnder.push(brigadeObjWithAverages);
       }
     });
     // do the same with the directUnits field
@@ -281,7 +290,8 @@ const getAverages = async (req, res, next) => {
     // units we will filter out from the unit level all of the units
     // that belong to the brigade and calculate the average between them
 
-    let unitTotalNumber = 0;
+    let unitTotalNumberReviewer = 0;
+    let unitTotalNumberManager = 0;
     // iterate over all of the unit level's objects
     for (const [unitKey, unitValue] of Object.entries(
       unitsLevelWithAveragesObj
@@ -292,15 +302,22 @@ const getAverages = async (req, res, next) => {
         newDivisionObj.managerAvg += unitValue.managerAvg;
         newDivisionObj.reviewerAvg += unitValue.reviewerAvg;
         // count the number of units that belong to the division
-        unitTotalNumber++;
+        if (unitValue.managerAvg > 0) {
+          unitTotalNumberManager++;
+        }
+        if (unitValue.reviewerAvg > 0) {
+          unitTotalNumberReviewer++;
+        }
       }
     }
 
     // use the formula : division's average = sum of the averages of the units / number of units
-    newDivisionObj.managerAvg = newDivisionObj.managerAvg / unitTotalNumber;
-    newDivisionObj.reviewerAvg = newDivisionObj.reviewerAvg / unitTotalNumber;
+    newDivisionObj.managerAvg =
+      newDivisionObj.managerAvg / unitTotalNumberManager;
+    newDivisionObj.reviewerAvg =
+      newDivisionObj.reviewerAvg / unitTotalNumberReviewer;
 
-    divisionLevelWithAveragesObj[newDivisionObj.divisionId] = newDivisionObj;
+    divisionLevelWithAveragesObj[newDivisionObj.id] = newDivisionObj;
   }
 
   // commands level
@@ -321,9 +338,9 @@ const getAverages = async (req, res, next) => {
   for (const command of allCommands) {
     // better command Obj that includes the average scores
     const newCommandObj = {
-      commandId: command._id,
-      commandName: command.name,
-      divisions: [],
+      id: command._id,
+      name: command.name,
+      unitsUnder: [],
       directUnits: [],
       managerAvg: 0,
       reviewerAvg: 0,
@@ -335,7 +352,7 @@ const getAverages = async (req, res, next) => {
       const divisionObjWithAverages =
         divisionLevelWithAveragesObj[division._id];
       if (!!divisionObjWithAverages) {
-        newCommandObj.divisions.push(divisionObjWithAverages);
+        newCommandObj.unitsUnder.push(divisionObjWithAverages);
       }
     });
 
@@ -348,7 +365,8 @@ const getAverages = async (req, res, next) => {
     });
 
     // calculate the score as the division level calculate it
-    let unitTotalNumber = 0;
+    let unitTotalNumberReviewer = 0;
+    let unitTotalNumberManager = 0;
     // iterate over all of the unit level's objects
     for (const [unitKey, unitValue] of Object.entries(
       unitsLevelWithAveragesObj
@@ -359,19 +377,31 @@ const getAverages = async (req, res, next) => {
         newCommandObj.managerAvg += unitValue.managerAvg;
         newCommandObj.reviewerAvg += unitValue.reviewerAvg;
         // count the number of units that belong to the command
-        unitTotalNumber++;
+        if (unitValue.managerAvg > 0) {
+          unitTotalNumberManager++;
+        }
+        if (unitValue.reviewerAvg > 0) {
+          unitTotalNumberReviewer++;
+        }
       }
     }
 
     // use the formula : command's average = sum of the averages of the units / number of units
-    newCommandObj.managerAvg = newCommandObj.managerAvg / unitTotalNumber;
-    newCommandObj.reviewerAvg = newCommandObj.reviewerAvg / unitTotalNumber;
+    newCommandObj.managerAvg =
+      newCommandObj.managerAvg / unitTotalNumberManager;
+    newCommandObj.reviewerAvg =
+      newCommandObj.reviewerAvg / unitTotalNumberReviewer;
 
     // include the command in the command Object
-    commandLevelWithAveragesObj[newCommandObj.commandId] = newCommandObj;
+    commandLevelWithAveragesObj[newCommandObj.id] = newCommandObj;
   }
 
-  res.json({ success: true, averageTree: commandLevelWithAveragesObj });
+  res.json({
+    success: true,
+    commandLvl: commandLevelWithAveragesObj,
+    divisionLvl: divisionLevelWithAveragesObj,
+    brigadeLvl: brigadesLevelWithAveragesObj,
+  });
 };
 
 exports.getAllUnits = getAllUnits;

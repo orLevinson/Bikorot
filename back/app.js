@@ -38,17 +38,20 @@ app.use((req, res, next) => {
 
 // login/register/promote/demote/delete users routes
 app.use("/api/users", usersRoutes);
+// categories percentages and files routes
 app.use("/api/info", infoRoutes);
+// review routes
 app.use("/api/reviews", reviewsRoutes);
-
-// only a test route
+// units and score averages routes
 app.use("/api/units",unitsRoutes);
 
+// if none of the mentioned routes above were called
 app.use((req, res, next) => {
   const error = new HttpError("Could not find this route.", 404);
   throw error;
 });
 
+// error handler
 app.use((error, req, res, next) => {
   //if the proccess fail we dont want to upload the image
   if (req.file) {

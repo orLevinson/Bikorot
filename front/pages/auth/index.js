@@ -11,11 +11,10 @@ import LoginPage from "../../components/page-login/loginPage/LoginPage";
 
 import "../../css/dashboard.css";
 
-
 function RTLPage(props) {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [loggedIn, setLoggedIn] = useState(false);
-  const [token,setToken] = useState();
+  const [token, setToken] = useState();
   const [modalState, setModalState] = useState({
     color: "",
     text: "",
@@ -36,33 +35,6 @@ function RTLPage(props) {
     }, 10000);
   };
 
-  // auto signout
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const expiryDate = localStorage.getItem("expiresIn");
-
-    if (!token || !expiryDate) {
-      return;
-    }
-
-    const dateObj = new Date(expiryDate);
-    const currentdate = new Date();
-
-    if (currentdate.getTime() > dateObj.getTime()) {
-      return;
-    }
-
-    setLoggedIn(true);
-    setToken(token);
-    const timeDifference = dateObj.getTime() - currentdate.getTime();
-
-    setTimeout(() => {
-      setLoggedIn(false);
-      setToken("");
-      localStorage.clear();
-    }, timeDifference);
-  }, []);
-
   // login handler
   if (!loggedIn) {
     return (
@@ -82,6 +54,5 @@ function RTLPage(props) {
 }
 
 RTLPage.layout = RTL;
-
 
 export default RTLPage;
