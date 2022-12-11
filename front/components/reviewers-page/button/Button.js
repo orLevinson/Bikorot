@@ -7,7 +7,6 @@ const Button = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [loading, setLoading] = React.useState(false);
-  
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -16,7 +15,7 @@ const Button = (props) => {
     setAnchorEl(null);
   };
 
-  const { id, name,personalNum,type } = props;
+  const { id, name, personalNum, type } = props;
   if (!!loading) {
     return (
       <div>
@@ -61,7 +60,7 @@ const Button = (props) => {
               props.showDoc(id, "CVFile");
             }}
           >
-            צפה במסמך קורות חיים
+            צפה בתוכן הביקורת
           </MenuItem>
           <MenuItem
             onClick={() => {
@@ -69,33 +68,7 @@ const Button = (props) => {
               props.showDoc(id, "AlamFile");
             }}
           >
-            צפה במסמך אישור אל"מ
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleClose();
-              props.showDoc(id, "pptFile");
-            }}
-          >
-            צפה במצגת הצגה אישית
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleClose();
-              props.editPriority(props.isEditing === id ? null : id);
-            }}
-          >
-            <span style={{ color: "purple" }}>
-              {props.isEditing === id ? "בטל הזנת תעדוף" : "הזן תעדוף"}
-            </span>
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleClose();
-              openModal(id, name);
-            }}
-          >
-            <span style={{ color: "blue" }}>שנה את קובץ מצגת המועמד</span>
+            ערוך את הביקורת
           </MenuItem>
           <MenuItem
             onClick={async () => {
@@ -105,7 +78,7 @@ const Button = (props) => {
               setLoading(false);
             }}
           >
-            <span style={{ color: "red" }}>הסר מועמד</span>
+            <span style={{ color: "red" }}>הסרת ביקורת</span>
           </MenuItem>
         </Menu>
       </div>

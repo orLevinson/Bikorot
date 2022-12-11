@@ -7,13 +7,21 @@ import CardHeader from "../../Card/CardHeader";
 import CardBody from "../../Card/CardBody";
 import CustomInput from "../../CustomInput/CustomInput";
 import Button from "../../CustomButtons/Button";
-import { CircularProgress, FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
+import {
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@material-ui/core";
 import { useRef, useState } from "react";
 
 const Register = (props) => {
   const [disable, setDisable] = useState(false);
   const passwordRef = useRef();
-  const userRef = useRef();
+  const repeatPasswordRef = useRef();
+  const nameRef = useRef();
+  const personalNumRef = useRef();
 
   return (
     <div className="loginContainer">
@@ -24,10 +32,10 @@ const Register = (props) => {
               <h2>עמוד הרשמה</h2>
               <p>נא להזין את כלל הפרטים הדרושים</p>
               <CustomInput
-                labelText="שם משתמש"
-                type="username"
+                labelText="מספר אישי"
+                type="unit"
                 inputProps={{
-                  inputRef: userRef,
+                  inputRef: personalNumRef,
                 }}
                 id="passwordInput"
                 formControlProps={{
@@ -47,11 +55,11 @@ const Register = (props) => {
               />
               <CustomInput
                 labelText="חזור על הסיסמא"
-                type="repeat"
+                type="password"
                 inputProps={{
-                  inputRef: passwordRef,
+                  inputRef: repeatPasswordRef,
                 }}
-                id="passwordInput"
+                id="repeatPasswordInput"
                 formControlProps={{
                   fullWidth: true,
                 }}
@@ -60,38 +68,13 @@ const Register = (props) => {
                 labelText="שם מלא"
                 type="name"
                 inputProps={{
-                  inputRef: passwordRef,
+                  inputRef: nameRef,
                 }}
                 id="passwordInput"
                 formControlProps={{
                   fullWidth: true,
                 }}
               />
-              <CustomInput
-                labelText="מספר אישי"
-                type="unit"
-                inputProps={{
-                  inputRef: passwordRef,
-                }}
-                id="passwordInput"
-                formControlProps={{
-                  fullWidth: true,
-                }}
-              />
-              <FormControl fullWidth>
-                <InputLabel id="setType" className="userType">סוג משתמש</InputLabel>
-                <Select
-              labelId="setFileLabel"
-              id="setF"
-              label="סוג משתמש"
-              className="userType"
-              fullWidth
-            >
-              <MenuItem value={"Takanon"}>מנהל</MenuItem>
-              <MenuItem value={"Proposition"}>מבקר</MenuItem>
-              <MenuItem value={"Short"}>מפקד</MenuItem>
-            </Select>
-              </FormControl>
               <div
                 style={{
                   width: "calc(80% + 26px)",
@@ -102,7 +85,12 @@ const Register = (props) => {
                   disabled={disable}
                   onClick={async () => {
                     setDisable(true);
-                    await props.login(passwordRef.current.value);
+                    await props.register(
+                      nameRef.current.value,
+                      personalNumRef.current.value,
+                      passwordRef.current.value,
+                      repeatPasswordRef.current.value
+                    );
                     setDisable(false);
                   }}
                   color="primary"

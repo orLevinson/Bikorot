@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React from "react";
+import React, { useContext } from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import Link from "next/link";
@@ -15,6 +15,8 @@ import Icon from "@material-ui/core/Icon";
 import image from "../../assets/img/sidebar.jpg";
 
 import styles from "assets/jss/nextjs-material-dashboard/components/sidebarStyle.js";
+import ContextProvider, { contextData } from "../../context/context";
+import LogoutButton from "../LogoutButton/LogoutButton";
 
 export default function Sidebar(props) {
   // used for checking current route
@@ -22,6 +24,7 @@ export default function Sidebar(props) {
   // creates styles for this component
   const useStyles = makeStyles(styles);
   const classes = useStyles();
+  const Context = useContext(contextData);
   // verifies if routeName is the one active (in browser input)
   function activeRoute(routeName) {
     return router.route.indexOf(routeName) > -1 ? true : false;
@@ -89,7 +92,12 @@ export default function Sidebar(props) {
         target="_blank"
       >
         <div className={classes.logoImage}>
-          <img src={logo} style={{top:17,borderRadius:100}} alt="logo" className={classes.img} />
+          <img
+            src={logo}
+            style={{ top: 17, borderRadius: 100 }}
+            alt="logo"
+            className={classes.img}
+          />
         </div>
         ביקורות-ניהול המלאי
       </a>
@@ -113,9 +121,7 @@ export default function Sidebar(props) {
           }}
         >
           {brand}
-          <div className={classes.sidebarWrapper}>
-            {links}
-          </div>
+          <div className={classes.sidebarWrapper}>{links}</div>
           {image !== undefined ? (
             <div
               className={classes.background}
@@ -137,10 +143,14 @@ export default function Sidebar(props) {
         >
           {brand}
           <div className={classes.sidebarWrapper}>{links}</div>
+          {!!Context.userData.token && <LogoutButton />}
           {image !== undefined ? (
             <div
               className={classes.background}
-              style={{ backgroundImage: "url("+image+")", backgroundPosition:"center"}}
+              style={{
+                backgroundImage: "url(" + image + ")",
+                backgroundPosition: "center",
+              }}
             />
           ) : null}
         </Drawer>

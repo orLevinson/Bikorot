@@ -10,9 +10,11 @@ import { useHttpClient } from "../../components/Hooks/http-hook";
 import LoginPage from "../../components/page-login/loginPage/LoginPage";
 
 import "../../css/dashboard.css";
+import { useRouter } from "next/router";
 
 function RTLPage(props) {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const router = useRouter();
   const [loggedIn, setLoggedIn] = useState(false);
   const [token, setToken] = useState();
   const [modalState, setModalState] = useState({
@@ -34,6 +36,12 @@ function RTLPage(props) {
       });
     }, 10000);
   };
+
+  useEffect(() => {
+    if (loggedIn) {
+      router.push("/dashboard");
+    }
+  }, [loggedIn]);
 
   // login handler
   if (!loggedIn) {

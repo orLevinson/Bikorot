@@ -87,15 +87,72 @@ const getReviewsByAuthor = async (req, res, next) => {
     return next(error);
   }
 
+  const { date, unit } = req.body;
+  const dateObj = new Date(date);
+
   let reviews = [];
-  try {
-    reviews = await Review.find({ author: authorId });
-  } catch (err) {
-    const error = new HttpError("unknown error occured", 500);
-    return next(error);
+  if (!date && !unit) {
+    try {
+      reviews = await Review.find({ author: authorId })
+        .populate({ path: "author", select: "name" })
+        .sort({ _id: -1 })
+        .limit(10);
+    } catch (err) {
+      const error = new HttpError("unknown error occured", 500);
+      return next(error);
+    }
   }
 
-  res.json({ success: true, reviews });
+  if (unit) {
+    let units;
+    try {
+      units = await Unit.find({ name: { $regex: unit } }).populate({
+        path: "reviews",
+        populate: {
+          path: "author",
+          select: "name",
+        },
+      });
+    } catch (err) {
+      const error = new HttpError("unknown error occured", 500);
+      return next(error);
+    }
+
+    units.forEach((i) => {
+      console.log(i);
+      const reviewObjects = i.reviews.map((r) => r.toObject({ getters: true }));
+      reviews = [...reviews, ...reviewObjects];
+    });
+
+    reviews = reviews.filter((i) => i.author._id.equals(authorId));
+  }
+
+  if (date && !unit) {
+    try {
+      reviews = await Review.find({
+        dateCreated: { $gte: dateObj },
+        author: authorId,
+      }).populate({
+        path: "author",
+        select: "name",
+      });
+    } catch (err) {
+      const error = new HttpError(err, 500);
+      return next(error);
+    }
+  }
+
+  if (date && unit) {
+    reviews = reviews.filter((i) => {
+      const newDate = new Date(i.dateCreated);
+      if (newDate.getTime() >= dateObj.getTime()) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  res.json({ success: true, reviews: reviews });
 };
 
 // check if user allowed to create a new review

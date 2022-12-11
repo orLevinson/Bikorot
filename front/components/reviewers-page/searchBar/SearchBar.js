@@ -1,5 +1,5 @@
 import { CircularProgress } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import Card from "../../Card/Card";
 import CardBody from "../../Card/CardBody";
 import CustomInput from "../../CustomInput/CustomInput";
@@ -9,7 +9,10 @@ import CustomButton from "../../CustomButtons/Button";
 
 import "./style.css";
 
-const SearchBar = () => {
+const SearchBar = (props) => {
+  const [date, setDate] = useState(null);
+  const [unit, setUnit] = useState("");
+
   return (
     <Card>
       <CardBody>
@@ -18,19 +21,12 @@ const SearchBar = () => {
             <CustomInput
               labelText="יחידה לחיפוש"
               type="unitname"
-              inputProps={{}}
-              id="passwordInput"
-              formControlProps={{
-                fullWidth: true,
+              inputProps={{
+                value: unit,
+                onChange: (e) => {
+                  setUnit(e.target.value);
+                },
               }}
-            />
-          </GridItem>
-          <GridItem xs={3} sm={3} md={3} flexCenter>
-            <CustomInput
-              labelText="יחידת אם"
-              type="parentunit"
-              noMarginTop={true}
-              inputProps={{}}
               id="passwordInput"
               formControlProps={{
                 fullWidth: true,
@@ -40,17 +36,25 @@ const SearchBar = () => {
           <GridItem xs={3} sm={3} md={3} flexCenter>
             <div className="datePicker">
               <label htmlFor="date">בוצעה מתאריך</label> &nbsp;&nbsp;&nbsp;
-              <input type="date" id="date"></input>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => {
+                  setDate(e.target.value);
+                }}
+                id="date"
+              ></input>
             </div>
           </GridItem>
           <GridItem xs={3} sm={3} md={3} flexCenter>
-          <CustomButton
-              // disabled={messageLoading}
-              // onClick={addMessageHandler}
+            <CustomButton
+              disabled={props.loading}
+              onClick={() => {
+                props.getUserReviews(unit, date);
+              }}
               color="rose"
-              
             >
-              {false ? (
+              {props.loading ? (
                 <CircularProgress
                   className="hello"
                   sx={{ mx: 4 }}

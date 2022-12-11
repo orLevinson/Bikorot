@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useRouter } from "next/router";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
@@ -11,12 +11,16 @@ import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 
-import routes from "routes.js";
+import routesManager from "routesManager.js";
+import routesReviewer from "routesReviewer.js";
+import routesRegular from "routesRegular.js";
+import routesNewUser from "routesNewUser.js";
 
 import styles from "assets/jss/nextjs-material-dashboard/layouts/rtlStyle.js";
 
 import bgImage from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/reactlogo.png";
+import { contextData } from "../context/context";
 
 let ps;
 
@@ -75,11 +79,32 @@ export default function RTL({ children, ...rest }) {
       window.removeEventListener("resize", resizeFunction);
     };
   }, [mainPanel]);
+
+  const Context = useContext(contextData);
+
+  let routesByContext = routesNewUser;
+  switch (Context.userData.perms) {
+    case "manager":
+    case "global":
+      routesByContext = routesManager;
+      break;
+    case "reviewer":
+      routesByContext = routesReviewer;
+      break;
+    default:
+      if (!!Context.userData.token) {
+        routesByContext = routesRegular;
+      } else {
+        routesByContext = routesNewUser;
+      }
+      break;
+  }
+
   return (
     <div className={classes.wrapper}>
       <Sidebar
-        routes={routes}
-        logoText={"الإبداعية تيم"}
+        routes={routesByContext}
+        logoText={"מערכת ביקורות"}
         logo={logo}
         image={image}
         handleDrawerToggle={handleDrawerToggle}

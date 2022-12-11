@@ -27,27 +27,6 @@ const dashboardRoutes = [
     icon: Speed,
     layout: "/dashboard",
   },
-  {
-    path: "/",
-    name: "Managers",
-    rtlName: "חיפוש מבקרים",
-    icon: Table,
-    layout: "/managers",
-  },
-  {
-    path: "/",
-    name: "Reviewers",
-    rtlName: "הביקורות שלי",
-    icon: Note,
-    layout: "/reviewers",
-  },
-  {
-    path: "/",
-    name: "newReview",
-    rtlName: "ביקורת חדשה",
-    icon: Add,
-    layout: "/newReview",
-  },
 ];
 
 export default dashboardRoutes;

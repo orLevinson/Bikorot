@@ -55,7 +55,10 @@ const Login = (props) => {
                   disabled={disable}
                   onClick={async () => {
                     setDisable(true);
-                    await props.login(userRef.current.value,passwordRef.current.value);
+                    await props.login(
+                      userRef.current.value,
+                      passwordRef.current.value
+                    );
                     setDisable(false);
                   }}
                   color="primary"

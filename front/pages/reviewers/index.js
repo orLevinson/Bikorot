@@ -1,6 +1,7 @@
 /*eslint-disable*/
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
+import { contextData } from "../../context/context";
 // @material-ui/core
 
 // @material-ui/icons
@@ -20,6 +21,7 @@ import CardBody from "../../components/Card/CardBody";
 import SearchBar from "../../components/reviewers-page/searchBar/SearchBar.js";
 import Button from "../../components/reviewers-page/button/Button";
 import Plus from "@material-ui/icons/Add";
+import Snackbar from "../../components/Snackbar/Snackbar";
 
 const styles = {
   cardCategoryWhite: {
@@ -51,29 +53,20 @@ const styles = {
   },
 };
 
-const i = [
-  ["Dakota Rice", "Niger", "Oud-Turnhout", "$36,738"],
-  ["Minerva Hooper", "Curaçao", "Sinaai-Waas", "$23,789"],
-  ["Sage Rodriguez", "Netherlands", "Baileux", "$56,142"],
-  ["Philip Chaney", "Korea, South", "Overland Park", "$38,735"],
-  ["Doris Greene", "Malawi", "Feldkirchen in Kärnten", "$63,542"],
-  ["Mason Porter", "Chile", "Gloucester", "$78,615"],
-];
-
-for (const j of i) {
-  j.push(<Button />);
-}
-
 function RTLPage(props) {
   const router = useRouter();
   const useStyles = makeStyles(styles);
   const classes = useStyles();
+  const [reviews, setReviews] = useState([]);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const [loading, setLoading] = useState(false);
   const [modalState, setModalState] = useState({
     color: "",
     text: "",
     open: false,
   });
+
+  const Context = useContext(contextData);
 
   const openModal = (color, text) => {
     setModalState({
@@ -89,12 +82,60 @@ function RTLPage(props) {
       });
     }, 10000);
   };
-  // in case the initial props arent loading
-  // useEffect(() => {
-  //   if (!!props.fail) {
-  //     openModal("danger", "קרתה שגיאה במהלך טעינת הנתונים");
-  //   }
-  // }, []);
+
+  // find out if there is a user and if yes get his data and reviews
+
+  const getUserReviews = async (unit = null, date = null) => {
+    try {
+      setLoading(true);
+      const response = await sendRequest(
+        `${process.env.NEXT_PUBLIC_API_ADDRESS}api/reviews/${Context.userData.id}`,
+        "POST",
+        JSON.stringify({
+          unit,
+          date,
+        }),
+        {
+          "Content-Type": "application/json",
+          Authorization: Context.userData.token,
+        }
+      );
+
+      if (!!response.success && !!response.reviews) {
+        const reviewsArray = [];
+        response.reviews.forEach((review) => {
+          const reviewArr = [];
+          reviewArr.push(review.unit.name);
+          const dateObj = new Date(review.dateCreated);
+          const dateStr = `${dateObj.getDate()} / ${
+            dateObj.getMonth() + 1
+          } / ${dateObj.getFullYear()}`;
+          reviewArr.push(dateStr);
+          reviewArr.push(parseInt(review.Score).toFixed(0));
+          reviewArr.push(<Button id={review._id} />);
+          reviewsArray.push(reviewArr);
+        });
+        setReviews(reviewsArray);
+        setLoading(false);
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      clearError();
+      setLoading(false);
+      openModal("danger", "קרתה תקלה במהלך שליפת הנתונים");
+    }
+  };
+
+  useEffect(() => {
+    const isUserAuthenticated = !!Context.userData.token;
+    if (!isUserAuthenticated) {
+      router.push("/dashboard");
+      return;
+    } else {
+      getUserReviews();
+    }
+  }, [Context]);
 
   return (
     <>
@@ -110,11 +151,16 @@ function RTLPage(props) {
                 </p>
               </CardHeader>
               <CardBody>
-                <SearchBar />
+                <SearchBar loading={loading} getUserReviews={getUserReviews} />
                 <Table
                   tableHeaderColor="primary"
-                  tableHead={["Name", "Country", "City", "Salary", "i"]}
-                  tableData={i}
+                  tableHead={[
+                    "יחידה",
+                    "תאריך ביצוע ביקורת",
+                    "ציון סופי",
+                    "פעולות",
+                  ]}
+                  tableData={reviews}
                 />
               </CardBody>
             </Card>
@@ -132,11 +178,27 @@ function RTLPage(props) {
           left: 30,
           bottom: 30,
         }}
-        onClick={()=>{router.push("/newReview")}}
+        onClick={() => {
+          router.push("/newReview");
+        }}
       >
         <Plus />
         הוספת ביקורת
       </Fab>
+      <Snackbar
+        place="bl"
+        color={modalState.color}
+        message={modalState.text}
+        open={modalState.open}
+        closeNotification={() =>
+          setModalState({
+            color: "",
+            text: "",
+            open: false,
+          })
+        }
+        close
+      />
     </>
   );
 }

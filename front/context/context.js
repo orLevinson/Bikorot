@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useHttpClient } from "../components/Hooks/http-hook";
 
@@ -14,6 +15,7 @@ export const contextData = createContext({
 });
 
 export const ContextProvider = (props) => {
+  const router = useRouter();
   const [userData, setUserData] = useState({
     token: null,
     name: null,
@@ -32,6 +34,7 @@ export const ContextProvider = (props) => {
     localStorage.removeItem("token");
     localStorage.removeItem("id");
     localStorage.removeItem("expiration");
+    router.push("/dashboard");
   };
 
   const loginHandler = async (personalNum, password) => {
@@ -47,6 +50,7 @@ export const ContextProvider = (props) => {
           "Content-Type": "application/json",
         }
       );
+
       if (!!response.success && !!response.token) {
         setUserData({
           token: response.token,
@@ -56,7 +60,7 @@ export const ContextProvider = (props) => {
         });
         const now = new Date();
         const inAWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-        localStorage.setItem("expiration", JSON.stringify(inAWeek));
+        localStorage.setItem("expiration", inAWeek);
         localStorage.setItem("id", response.id);
         localStorage.setItem("token", `Bearer ${response.token}`);
         setTimeout(() => {
@@ -85,6 +89,7 @@ export const ContextProvider = (props) => {
           "Content-Type": "application/json",
         }
       );
+
       if (!!response.success && !!response.token) {
         setUserData({
           token: response.token,
@@ -95,7 +100,7 @@ export const ContextProvider = (props) => {
 
         const now = new Date();
         const inAWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-        localStorage.setItem("expiration", JSON.stringify(inAWeek));
+        localStorage.setItem("expiration", inAWeek);
         localStorage.setItem("id", response.id);
         localStorage.setItem("token", `Bearer ${response.token}`);
         setTimeout(() => {
@@ -106,7 +111,7 @@ export const ContextProvider = (props) => {
       }
     } catch (err) {
       clearError();
-      throw new Error();
+      throw new Error(err);
     }
   };
 
@@ -124,19 +129,22 @@ export const ContextProvider = (props) => {
           setTimeout(() => {
             logoutHandler();
           }, expirationDateObj.getTime() - new Date().getTime());
-
           //   get the perms and name from API
           try {
             const response = await sendRequest(
               `${process.env.NEXT_PUBLIC_API_ADDRESS}api/users/${id}`,
-              "GET"
+              "GET",
+              null,
+              {
+                Authorization: token,
+              }
             );
-            if (!!response.success && !!response.token) {
+            if (!!response.success && !!response.user) {
               setUserData({
                 token: token,
-                name: response.name,
+                name: response.user.name,
                 id: id,
-                perms: response.perms,
+                perms: response.user.perms,
               });
             }
           } catch (err) {
