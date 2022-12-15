@@ -18,6 +18,7 @@ import Snackbar from "../../components/Snackbar/Snackbar.js";
 // custom css
 import "../../css/dashboard.css";
 
+
 // custom styles for the card
 const styles = {
   cardCategoryWhite: {
@@ -188,8 +189,8 @@ function RTLPage(props) {
           setCurrentUnit({ ...newUnit });
         }
         break;
-        default:
-          break;
+      default:
+        break;
     }
   };
 

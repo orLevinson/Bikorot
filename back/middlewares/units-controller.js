@@ -404,5 +404,45 @@ const getAverages = async (req, res, next) => {
   });
 };
 
+const getAllLevels = async (req, res, next) => {
+  let units;
+  try {
+    units = await Unit.find();
+  } catch (err) {
+    const error = new HttpError("unknown error occured", 500);
+    return next(error);
+  }
+
+  let commands;
+  try {
+    // populate every level to the unit level
+    commands = await Command.find().populate([
+      {
+        path: "divisions",
+        populate: [
+          {
+            path: "brigades",
+            populate: {
+              path: "units",
+            },
+          },
+          {
+            path: "directUnits",
+          },
+        ],
+      },
+      {
+        path: "directUnits",
+      },
+    ]);
+  } catch (err) {
+    const error = new HttpError("unknown error occured", 500);
+    return next(error);
+  }
+
+  res.json({ units: units, commands: commands });
+};
+
 exports.getAllUnits = getAllUnits;
 exports.getAverages = getAverages;
+exports.getAllLevels = getAllLevels;

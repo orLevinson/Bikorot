@@ -26,7 +26,6 @@ import {ContextProvider} from "../context/context";
 
 import "assets/css/nextjs-material-dashboard.css?v=1.1.0";
 
-console.log("test");
 Router.events.on("routeChangeStart", (url) => {
   console.log(`Loading: ${url}`);
   document.body.classList.add("body-page-transition");

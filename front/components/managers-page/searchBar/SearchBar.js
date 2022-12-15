@@ -1,5 +1,6 @@
+import React, { useRef } from "react";
+
 import { CircularProgress } from "@material-ui/core";
-import React from "react";
 import Card from "../../Card/Card";
 import CardBody from "../../Card/CardBody";
 import CustomInput from "../../CustomInput/CustomInput";
@@ -9,7 +10,9 @@ import CustomButton from "../../CustomButtons/Button";
 
 import "./style.css";
 
-const SearchBar = () => {
+const SearchBar = (props) => {
+  const nameRef = useRef();
+  const numRef = useRef();
   return (
     <Card>
       <CardBody>
@@ -18,7 +21,9 @@ const SearchBar = () => {
             <CustomInput
               labelText="שם לחיפוש"
               type="unitname"
-              inputProps={{}}
+              inputProps={{
+                inputRef: nameRef,
+              }}
               id="passwordInput"
               formControlProps={{
                 fullWidth: true,
@@ -30,7 +35,9 @@ const SearchBar = () => {
               labelText="מספר אישי לחיפוש"
               type="parentunit"
               noMarginTop={true}
-              inputProps={{}}
+              inputProps={{
+                inputRef: numRef,
+              }}
               id="passwordInput"
               formControlProps={{
                 fullWidth: true,
@@ -38,13 +45,14 @@ const SearchBar = () => {
             />
           </GridItem>
           <GridItem xs={3} sm={3} md={3} flexCenter>
-          <CustomButton
-              // disabled={messageLoading}
-              // onClick={addMessageHandler}
+            <CustomButton
+              disabled={props.isLoading}
+              onClick={() => {
+                props.sortUsers(nameRef.current.value, numRef.current.value);
+              }}
               color="rose"
-              
             >
-              {false ? (
+              {props.isLoading ? (
                 <CircularProgress
                   className="hello"
                   sx={{ mx: 4 }}

@@ -1,6 +1,7 @@
 /*eslint-disable*/
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
+import { contextData } from "../../context/context";
 // @material-ui/core
 
 // @material-ui/icons
@@ -15,10 +16,14 @@ import CardHeader from "../../components/Card/CardHeader";
 import GridContainer from "../../components/Grid/GridContainer";
 import Card from "../../components/Card/Card";
 import Table from "../../components/Table/Table";
-import { makeStyles } from "@material-ui/core";
+import { Fab, makeStyles } from "@material-ui/core";
 import CardBody from "../../components/Card/CardBody";
 import SearchBar from "../../components/reviewers-page/searchBar/SearchBar.js";
 import Button from "../../components/reviewers-page/button/Button";
+import Plus from "@material-ui/icons/Add";
+import Snackbar from "../../components/Snackbar/Snackbar";
+
+import "../../css/dashboard.css";
 
 const styles = {
   cardCategoryWhite: {
@@ -50,31 +55,23 @@ const styles = {
   },
 };
 
-const i = [
-  ["Dakota Rice", "Niger", "Oud-Turnhout", "$36,738"],
-  ["Minerva Hooper", "Curaçao", "Sinaai-Waas", "$23,789"],
-  ["Sage Rodriguez", "Netherlands", "Baileux", "$56,142"],
-  ["Philip Chaney", "Korea, South", "Overland Park", "$38,735"],
-  ["Doris Greene", "Malawi", "Feldkirchen in Kärnten", "$63,542"],
-  ["Mason Porter", "Chile", "Gloucester", "$78,615"],
-];
-
-for (const j of i) {
-  j.push(<Button />);
-}
-
-function RTLPage(props) {
+function RTLPage() {
   const router = useRouter();
   const uid = router.query.uid;
-
   const useStyles = makeStyles(styles);
   const classes = useStyles();
+  const [reviews, setReviews] = useState([]);
+  const [name, setName] = useState("");
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const [loading, setLoading] = useState(false);
   const [modalState, setModalState] = useState({
     color: "",
     text: "",
     open: false,
   });
+
+  const Context = useContext(contextData);
+  console.log(Context);
 
   const openModal = (color, text) => {
     setModalState({
@@ -90,38 +87,111 @@ function RTLPage(props) {
       });
     }, 10000);
   };
-  // in case the initial props arent loading
-  // useEffect(() => {
-  //   if (!!props.fail) {
-  //     openModal("danger", "קרתה שגיאה במהלך טעינת הנתונים");
-  //   }
-  // }, []);
 
-  console.log(uid);
+  // find out if there is a user and if yes get his data and reviews
+
+  const getUserReviews = async (unit = null, date = null) => {
+    try {
+      setLoading(true);
+      const response = await sendRequest(
+        `${process.env.NEXT_PUBLIC_API_ADDRESS}api/reviews/getByAuthor/${uid}`,
+        "POST",
+        JSON.stringify({
+          unit,
+          date,
+        }),
+        {
+          "Content-Type": "application/json",
+          Authorization: Context.userData.token,
+        }
+      );
+
+      if (!!response.success && !!response.reviews) {
+        const reviewsArray = [];
+        setName(response.name);
+        response.reviews.forEach((review) => {
+          const reviewArr = [];
+          reviewArr.push(review.unit.name);
+          const dateObj = new Date(review.dateCreated);
+          const dateStr = `${dateObj.getDate()} / ${
+            dateObj.getMonth() + 1
+          } / ${dateObj.getFullYear()}`;
+          reviewArr.push(dateStr);
+          reviewArr.push(parseInt(review.Score).toFixed(0));
+          reviewArr.push(<Button id={review._id} />);
+          reviewsArray.push(reviewArr);
+        });
+        setReviews(reviewsArray);
+        setLoading(false);
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      clearError();
+      setLoading(false);
+      openModal("danger", "קרתה תקלה במהלך שליפת הנתונים");
+    }
+  };
+
+  useEffect(() => {
+    const isManager =
+      Context.userData.perms === "manager" ||
+      Context.userData.perms === "global";
+    if (!isManager) {
+      router.push("/dashboard");
+      return;
+    } else {
+      getUserReviews();
+    }
+  }, [Context]);
 
   return (
-    <div>
-      <GridContainer fullWidth>
-        <GridItem xs={12} sm={12} md={12}>
-          <Card>
-            <CardHeader color={"primary"}>
-              <h3 className={classes.cardTitleWhite}>עמוד הביקורות של {uid !== "" ? uid : "שלי"}</h3>
-              <p className={classes.cardCategoryWhite}>
-                ניתן לחפש ביקורות ע"י שם יחידה, יחידת אם או תאריך. כמו גם, ניתן לערוך את הביקורות או למחוק אותן
-              </p>
-            </CardHeader>
-            <CardBody>
-              <SearchBar />
-              <Table
-                tableHeaderColor="primary"
-                tableHead={["Name", "Country", "City", "Salary", "i"]}
-                tableData={i}
-              />
-            </CardBody>
-          </Card>
-        </GridItem>
-      </GridContainer>
-    </div>
+    <>
+      <div>
+        <GridContainer fullWidth>
+          <GridItem xs={12} sm={12} md={12}>
+            <Card>
+              <CardHeader color={"primary"}>
+                <h3 className={classes.cardTitleWhite}>
+                  עמוד הביקורות של {name}
+                </h3>
+                <p className={classes.cardCategoryWhite}>
+                  ניתן לחפש ביקורות ע"י שם יחידה, יחידת אם או תאריך. כמו גם,
+                  ניתן לערוך את הביקורות או למחוק אותן
+                </p>
+              </CardHeader>
+              <CardBody>
+                <SearchBar loading={loading} getUserReviews={getUserReviews} />
+                <Table
+                  tableHeaderColor="primary"
+                  tableHead={[
+                    "יחידה",
+                    "תאריך ביצוע ביקורת",
+                    "ציון סופי",
+                    "פעולות",
+                  ]}
+                  tableData={reviews}
+                />
+              </CardBody>
+            </Card>
+          </GridItem>
+        </GridContainer>
+      </div>
+      <Snackbar
+        place="bl"
+        color={modalState.color}
+        message={modalState.text}
+        open={modalState.open}
+        closeNotification={() =>
+          setModalState({
+            color: "",
+            text: "",
+            open: false,
+          })
+        }
+        close
+      />
+    </>
   );
 }
 

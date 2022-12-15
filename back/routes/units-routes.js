@@ -11,7 +11,8 @@ const router = express.Router();
 
 router.get("/", unitsController.getAllUnits);
 
-router.get("/averages",unitsController.getAverages);
+router.get("/averages", unitsController.getAverages);
 
+router.get("/all", unitsController.getAllLevels);
 
 module.exports = router;

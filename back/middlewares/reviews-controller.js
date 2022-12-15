@@ -24,8 +24,7 @@ const getReviewsByFilters = async (req, res, next) => {
     try {
       reviews = await Review.find()
         .populate({ path: "author", select: "name" })
-        .sort({ _id: -1 })
-        .limit(10);
+        .sort({ _id: -1 });
     } catch (err) {
       const error = new HttpError("unknown error occured", 500);
       return next(error);
@@ -87,6 +86,19 @@ const getReviewsByAuthor = async (req, res, next) => {
     return next(error);
   }
 
+  let author;
+  try {
+    author = await User.findOne({ _id: authorId }, "name");
+  } catch (err) {
+    const error = new HttpError("invalid author entered", 500);
+    return next(error);
+  }
+
+  if (!author) {
+    const error = new HttpError("invalid author entered", 500);
+    return next(error);
+  }
+
   const { date, unit } = req.body;
   const dateObj = new Date(date);
 
@@ -95,8 +107,7 @@ const getReviewsByAuthor = async (req, res, next) => {
     try {
       reviews = await Review.find({ author: authorId })
         .populate({ path: "author", select: "name" })
-        .sort({ _id: -1 })
-        .limit(10);
+        .sort({ _id: -1 });
     } catch (err) {
       const error = new HttpError("unknown error occured", 500);
       return next(error);
@@ -152,7 +163,7 @@ const getReviewsByAuthor = async (req, res, next) => {
     });
   }
 
-  res.json({ success: true, reviews: reviews });
+  res.json({ success: true, reviews: reviews, name: author.name });
 };
 
 // check if user allowed to create a new review
@@ -511,10 +522,8 @@ const addReview = async (req, res, next) => {
     unit.reviews.push(newReview._id);
     const sess = await mongoose.startSession(); // start a session
     sess.startTransaction();
-    await Promise.all([
-      newReview.save({ session: sess }),
-      unit.save({ session: sess }),
-    ]);
+    await newReview.save({ session: sess });
+    await unit.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {
     const error = new HttpError(err, 500);

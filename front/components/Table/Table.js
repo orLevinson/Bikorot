@@ -14,10 +14,23 @@ import { TablePagination } from "@material-ui/core";
 export default function CustomTable(props) {
   const useStyles = makeStyles(styles);
   const classes = useStyles();
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const { tableHead, tableData, tableHeaderColor } = props;
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <div className={classes.tableResponsive}>
-      <Table className={classes.table}>
+      <Table className={classes.table}
+      padding="checkbox">
         {tableHead !== undefined ? (
           <TableHead className={classes[tableHeaderColor + "TableHeader"]}>
             <TableRow className={classes.tableHeadRow}>
@@ -35,20 +48,35 @@ export default function CustomTable(props) {
           </TableHead>
         ) : null}
         <TableBody>
-          {tableData.map((prop, key) => {
-            return (
-              <TableRow key={key} className={classes.tableBodyRow}>
-                {prop.map((prop, key) => {
-                  return (
-                    <TableCell className={classes.tableCell} key={key}>
-                      {prop}
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-            );
-          })}
+          {tableData
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((prop, key) => {
+              return (
+                <TableRow key={key} className={classes.tableBodyRow}>
+                  {prop.map((prop, key) => {
+                    return (
+                      <TableCell className={classes.tableCell} key={key}>
+                        {prop}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
         </TableBody>
+        <TablePagination
+          className={classes.pagination}
+          rowsPerPageOptions={[5]}
+          component="div"
+          count={tableData.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          labelDisplayedRows={({ from, to, count }) => {
+            return `מציג את ${from} - ${to} מתוך ${count} תוצאות`;
+          }}
+        />
       </Table>
     </div>
   );

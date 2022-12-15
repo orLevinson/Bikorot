@@ -53,7 +53,7 @@ export const ContextProvider = (props) => {
 
       if (!!response.success && !!response.token) {
         setUserData({
-          token: response.token,
+          token: "Bearer " + response.token,
           name: response.name,
           id: response.id,
           perms: response.perms,
@@ -92,7 +92,7 @@ export const ContextProvider = (props) => {
 
       if (!!response.success && !!response.token) {
         setUserData({
-          token: response.token,
+          token: "Bearer " + response.token,
           name: response.name,
           id: response.id,
           perms: response.perms,

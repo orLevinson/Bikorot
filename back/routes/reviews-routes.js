@@ -29,7 +29,7 @@ router.post("/filter", reviewsController.getReviewsByFilters);
 
 // there is an annoying bug in JS that dont allow me to have
 // body inside a GET req, so I changed it to post
-router.post("/:aid", reviewsController.getReviewsByAuthor);
+router.post("/getByAuthor/:aid", reviewsController.getReviewsByAuthor);
 
 // only admins & global perms allowed to preform the following tasks
 router.use(checkAuth);

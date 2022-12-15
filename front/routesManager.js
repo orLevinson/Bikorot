@@ -30,7 +30,7 @@ const dashboardRoutes = [
   {
     path: "/",
     name: "Reviewers",
-    rtlName: "הביקורות שלי",
+    rtlName: "עריכת ביקורות",
     icon: Note,
     layout: "/reviewers",
   },

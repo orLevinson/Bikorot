@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 
 const HttpError = require("../models/http-error");
 const User = require("../models/users");
+const Review = require("../models/reviews");
 
 // get all users middleware
 
@@ -304,6 +305,7 @@ const deleteUser = async (req, res, next) => {
   // pull the specified user object
   try {
     await User.findByIdAndDelete(UserId);
+    await Review.deleteMany({ author: UserId });
   } catch (err) {
     const error = new HttpError("Changing perms failed, please try again", 500);
     return next(error);

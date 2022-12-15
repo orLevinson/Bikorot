@@ -23,6 +23,8 @@ import Button from "../../components/reviewers-page/button/Button";
 import Plus from "@material-ui/icons/Add";
 import Snackbar from "../../components/Snackbar/Snackbar";
 
+import "../../css/dashboard.css";
+
 const styles = {
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
@@ -89,7 +91,7 @@ function RTLPage(props) {
     try {
       setLoading(true);
       const response = await sendRequest(
-        `${process.env.NEXT_PUBLIC_API_ADDRESS}api/reviews/${Context.userData.id}`,
+        `${process.env.NEXT_PUBLIC_API_ADDRESS}api/reviews/getByAuthor/${Context.userData.id}`,
         "POST",
         JSON.stringify({
           unit,

@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 // @material-ui/core
 
 // @material-ui/icons
@@ -18,6 +18,13 @@ import { makeStyles } from "@material-ui/core";
 import CardBody from "../../components/Card/CardBody";
 import SearchBar from "../../components/managers-page/searchBar/SearchBar.js";
 import Button from "../../components/managers-page/button/Button";
+import { contextData } from "../../context/context";
+import { useRouter } from "next/router";
+import Snackbar from "../../components/Snackbar/Snackbar";
+import UserButton from "../../components/managers-page/button/Button";
+
+// custom css
+import "../../css/dashboard.css";
 
 const styles = {
   cardCategoryWhite: {
@@ -49,22 +56,14 @@ const styles = {
   },
 };
 
-const i = [
-  ["Dakota Rice", "Niger", "Oud-Turnhout", "$36,738"],
-  ["Minerva Hooper", "Curaçao", "Sinaai-Waas", "$23,789"],
-  ["Sage Rodriguez", "Netherlands", "Baileux", "$56,142"],
-  ["Philip Chaney", "Korea, South", "Overland Park", "$38,735"],
-  ["Doris Greene", "Malawi", "Feldkirchen in Kärnten", "$63,542"],
-  ["Mason Porter", "Chile", "Gloucester", "$78,615"],
-];
-
-for (const j of i) {
-  j.push(<Button />);
-}
-
 function RTLPage(props) {
   const useStyles = makeStyles(styles);
   const classes = useStyles();
+  const router = useRouter();
+  const Context = useContext(contextData);
+  const [usersList, setUsersList] = useState([]);
+  const [userListToShow, setUsersListToShow] = useState([]);
+  const [loading, setLoading] = useState(false);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [modalState, setModalState] = useState({
     color: "",
@@ -72,26 +71,133 @@ function RTLPage(props) {
     open: false,
   });
 
-  const openModal = (color, text) => {
-    setModalState({
-      color: color,
-      text: text,
-      open: true,
-    });
-    setTimeout(() => {
+  const openModal = useCallback(
+    (color, text) => {
       setModalState({
-        color: "",
-        text: "",
-        open: false,
+        color: color,
+        text: text,
+        open: true,
       });
-    }, 10000);
+      setTimeout(() => {
+        setModalState({
+          color: "",
+          text: "",
+          open: false,
+        });
+      }, 10000);
+    },
+    [setModalState]
+  );
+
+  const getUsers = useCallback(async () => {
+    let users = [];
+    try {
+      setLoading(true);
+      const response = await sendRequest(
+        `${process.env.NEXT_PUBLIC_API_ADDRESS}api/users/allUsers`,
+        "GET",
+        null,
+        {
+          Authorization: Context.userData.token,
+        }
+      );
+      console.log(response);
+      if (!!response.success && !!response.users) {
+        const newUserArr = [];
+        response.users.forEach((user) => {
+          const userArr = [];
+          userArr.push(user.name);
+          userArr.push(user.personalNum);
+          switch (user.perms) {
+            case "manager":
+              userArr.push("מנהל");
+              break;
+            case "global":
+              userArr.push("מנהל מערכת");
+              break;
+            case "reviewer":
+              userArr.push("מבקר");
+              break;
+            default:
+              userArr.push("אין הרשאות");
+              break;
+          }
+          userArr.push(
+            <UserButton
+              id={user._id}
+              openModal={openModal}
+              getUsers={getUsers}
+            />
+          );
+          newUserArr.push(userArr);
+        });
+        setUsersList([...newUserArr]);
+        setLoading(false);
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      clearError();
+      openModal("danger", "קרתה תקלה במהלך שליפת המשתמשים");
+      setLoading(false);
+    }
+  }, [setLoading, openModal, setUsersList, sendRequest]);
+
+  // just load the initial values
+  useEffect(() => {
+    const isManager =
+      Context.userData.perms === "manager" ||
+      Context.userData.perms === "global";
+    if (!isManager) {
+      router.push("/dashboard");
+      return;
+    } else {
+      getUsers();
+    }
+  }, [Context, getUsers]);
+
+  const sortUsers = (name = "", num = "") => {
+    console.log(usersList.length);
+    if (name === "" && num === "") {
+      setUsersListToShow([...usersList]);
+    }
+    if (name !== "" && num === "") {
+      setUsersListToShow(
+        [...usersList].filter((user) => {
+          if (user[0].includes(name)) {
+            return true;
+          }
+          return false;
+        })
+      );
+      console.log(usersList.length);
+    }
+    if (name === "" && num !== "") {
+      setUsersListToShow(
+        [...usersList].filter((user) => {
+          if (user[1].includes(num)) {
+            return true;
+          }
+          return false;
+        })
+      );
+    }
+    if (name !== "" && num !== "") {
+      setUsersListToShow(
+        [...usersList].filter((user) => {
+          if (user[1].includes(num) && user[0].includes(name)) {
+            return true;
+          }
+          return false;
+        })
+      );
+    }
   };
-  // in case the initial props arent loading
-  // useEffect(() => {
-  //   if (!!props.fail) {
-  //     openModal("danger", "קרתה שגיאה במהלך טעינת הנתונים");
-  //   }
-  // }, []);
+
+  useEffect(() => {
+    // update the sorting function whenever the userList changes
+    sortUsers();
+  }, [usersList]);
 
   return (
     <div>
@@ -101,20 +207,35 @@ function RTLPage(props) {
             <CardHeader color={"primary"}>
               <h3 className={classes.cardTitleWhite}>רשימת מבקרים</h3>
               <p className={classes.cardCategoryWhite}>
-              ניתן לחפש שמות מבקרים ע"י שם, מ"א. ניתן לשנות הרשאות ולחפש ביקורות של אותם המבקרים
+                ניתן לחפש שמות מבקרים ע"י שם, מ"א. ניתן לשנות הרשאות ולחפש
+                ביקורות של אותם המבקרים
               </p>
             </CardHeader>
             <CardBody>
-              <SearchBar />
+              <SearchBar isLoading={loading} sortUsers={sortUsers} />
               <Table
                 tableHeaderColor="primary"
-                tableHead={["Name", "Country", "City", "Salary",'i']}
-                tableData={i}
+                tableHead={["שם", "מספר אישי", "הרשאה", "פעולות"]}
+                tableData={userListToShow}
               />
             </CardBody>
           </Card>
         </GridItem>
       </GridContainer>
+      <Snackbar
+        place="bl"
+        color={modalState.color}
+        message={modalState.text}
+        open={modalState.open}
+        closeNotification={() =>
+          setModalState({
+            color: "",
+            text: "",
+            open: false,
+          })
+        }
+        close
+      />
     </div>
   );
 }

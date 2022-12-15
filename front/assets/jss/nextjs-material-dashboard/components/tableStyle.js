@@ -39,7 +39,7 @@ const tableStyle = (theme) => ({
     borderSpacing: "0",
     borderCollapse: "collapse",
     direction: "rtl",
-    textAlign: "right"
+    textAlign: "right",
   },
   tableHeadCell: {
     color: "inherit",
@@ -55,7 +55,7 @@ const tableStyle = (theme) => ({
     verticalAlign: "middle",
     fontSize: "0.8125rem",
     direction: "rtl",
-    textAlign: "right"
+    textAlign: "right",
   },
   tableResponsive: {
     width: "100%",
@@ -75,6 +75,18 @@ const tableStyle = (theme) => ({
     display: "table-row",
     outline: "none",
     verticalAlign: "middle",
+  },
+  pagination: {
+    padding: 8,
+    direction: "rtl",
+    tableLayout: "fixed",
+    "& .MuiToolbar-root": {
+      flexDirection: "row-reverse",
+      justifyContent: "flex-end",
+    },
+    "& .MuiToolbar-root .MuiTablePagination-actions .MuiButtonBase-root": {
+      transform: "rotate(180deg)",
+    },
   },
 });
 
