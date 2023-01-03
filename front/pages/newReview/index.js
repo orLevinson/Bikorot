@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback, useEffect } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
 import { contextData } from "../../context/context";
 import RTL from "layouts/RTL.js";
@@ -15,6 +15,7 @@ import {
 } from "../../context/contextReview";
 import Snackbar from "../../components/Snackbar/Snackbar";
 import { useHttpClient } from "../../components/Hooks/http-hook";
+import SubmitBtn from "../../components/newReview/SubmitBtn";
 
 const styles = (theme) => ({
   pl: {
@@ -39,6 +40,7 @@ function HorizontalLinearStepper(props) {
   const Context = useContext(contextData);
   const reviewContext = useContext(reviewContextData);
   const [loading, setLoading] = useState(false);
+  const [files, setFiles] = useState(props.files);
   const { sendRequest, clearError } = useHttpClient();
   const [activeStep, setActiveStep] = useState(0);
   const [modalState, setModalState] = useState({
@@ -96,55 +98,19 @@ function HorizontalLinearStepper(props) {
     }
   }, [Context]);
 
-// unitData isnt being saved after going to the other pages for some reason
-  const submitHandler = async () => {
-    // check if unit and command is not empty
-    if (
-      !reviewContext.reviewData.unitData.unit ||
-      reviewContext.reviewData.unitData.unit === "" ||
-      !reviewContext.reviewData.unitData.command ||
-      reviewContext.reviewData.unitData.command === ""
-    ) {
-      openModal("danger", "אנא הזן יחידה");
-      return;
+  // in case the initial props arent loading
+  useEffect(() => {
+    if (!!props.fail) {
+      openModal("danger", "קרתה שגיאה במהלך טעינת הנתונים");
     }
+  }, [openModal, props.fail]);
 
-    setLoading(true);
-
-    const body = {
-      author: Context.userData.id,
-      unit: unitData.unit,
-      command: unitData.command,
-      division: !!unitData.division ? unitData.division : null,
-      brigade: !!unitData.brigade ? unitData.brigade : null,
-      scores: reviewContext.scores,
-      Summary: reviewContext.summary,
-    };
-
-    try {
-      const response = await sendRequest(
-        `${process.env.NEXT_PUBLIC_API_ADDRESS}api/reviews/newReview`,
-        "POST",
-        JSON.stringify(body),
-        {
-          "Content-Type": "application/json",
-          Authorization: Context.userData.token,
-        }
-      );
-      if (!!response.success) {
-        openModal("success", "הביקורת נוספה בהצלחה");
-        setLoading(false);
-        reviewContext.clearContext();
-        router.push("/dashboard");
-      } else {
-        throw new Error();
-      }
-    } catch (err) {
-      clearError();
-      openModal("danger", "קרתה תקלה במהלך שליחת הביקורת");
-      setLoading(false);
-    }
-  };
+  let currentBtn =
+    activeStep === steps.length - 1 ? (
+      <SubmitBtn openModal={openModal} />
+    ) : (
+      <Button onClick={handleNext}>הבא</Button>
+    );
 
   return (
     <ReviewContextProvider>
@@ -178,22 +144,12 @@ function HorizontalLinearStepper(props) {
               קודם
             </Button>
             <Box sx={{ flex: "1 1 auto" }} />
-            <Button
-              disabled={loading}
-              onClick={() => {
-                if (activeStep === steps.length - 1) {
-                  submitHandler();
-                } else {
-                  handleNext();
-                }
-              }}
-            >
-              {activeStep === steps.length - 1 ? "סיים" : "הבא"}
-            </Button>
+            {currentBtn}
           </Box>
         </React.Fragment>
       </Box>
       <NewReviewSelector
+        files={files}
         openModal={openModal}
         next={handleNext}
         step={activeStep}
@@ -217,5 +173,43 @@ function HorizontalLinearStepper(props) {
 }
 
 HorizontalLinearStepper.layout = RTL;
+
+export async function getStaticProps() {
+  let files = {};
+  let fail = false;
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_ADDRESS}api/info/allFiles`,
+      {
+        method: "GET",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("fetching content failed");
+    }
+
+    const parsedResponse = await response.json();
+
+    if (!parsedResponse) {
+      throw new Error("fetching content failed");
+    }
+
+    if (!!parsedResponse.success) {
+      files = parsedResponse.files;
+    }
+  } catch (err) {
+    fail = true;
+  }
+
+  return {
+    props: {
+      files,
+      fail,
+    },
+    revalidate: 5,
+  };
+}
 
 export default withStyles(styles)(HorizontalLinearStepper);

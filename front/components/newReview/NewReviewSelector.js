@@ -18,42 +18,78 @@ const NewReviewSelector = (props) => {
     case 1:
       stage = (
         <div>
-          <Subject1 />
+          <Subject1
+            files={
+              !!props.files && !!props.files.subject1
+                ? props.files.subject1
+                : {}
+            }
+          />
         </div>
       );
       break;
     case 2:
       stage = (
         <div>
-          <Subject2 />
+          <Subject2
+            files={
+              !!props.files && !!props.files.subject2
+                ? props.files.subject2
+                : {}
+            }
+          />
         </div>
       );
       break;
     case 3:
       stage = (
         <div>
-          <Subject3 />
+          <Subject3
+            files={
+              !!props.files && !!props.files.subject3
+                ? props.files.subject3
+                : {}
+            }
+          />
         </div>
       );
       break;
     case 4:
       stage = (
         <div>
-          <Subject4 />
+          <Subject4
+            files={
+              !!props.files && !!props.files.subject4
+                ? props.files.subject4
+                : {}
+            }
+          />
         </div>
       );
       break;
     case 5:
       stage = (
         <div>
-          <Subject5 />
+          <Subject5
+            files={
+              !!props.files && !!props.files.subject5
+                ? props.files.subject5
+                : {}
+            }
+          />
         </div>
       );
       break;
     case 6:
       stage = (
         <div>
-          <Subject6 />
+          <Subject6
+            files={
+              !!props.files && !!props.files.subject6
+                ? props.files.subject6
+                : {}
+            }
+          />
         </div>
       );
       break;

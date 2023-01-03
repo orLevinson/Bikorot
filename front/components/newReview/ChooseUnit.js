@@ -17,10 +17,10 @@ import { reviewContextData } from "../../context/contextReview";
 
 const ChooseUnit = (props) => {
   const { changeUnit, reviewData } = useContext(reviewContextData);
-  const [pikud, setPikud] = useState(reviewData.unitData.command);
-  const [ogda, setOgda] = useState(reviewData.unitData.division);
-  const [hativa, setHativa] = useState(reviewData.unitData.brigade);
-  const [unit, setUnit] = useState(reviewData.unitData.unit);
+  const [pikud, setPikud] = useState("");
+  const [ogda, setOgda] = useState("");
+  const [hativa, setHativa] = useState("");
+  const [unit, setUnit] = useState("");
   const [loading, setLoading] = useState(false);
   const { clearError, sendRequest } = useHttpClient();
   const [fetchRes, setFetchRes] = useState([]);
@@ -39,6 +39,10 @@ const ChooseUnit = (props) => {
         );
         if (!!response.commands) {
           setFetchRes(response.commands);
+          setPikud(reviewData.unitData.command);
+          setOgda(reviewData.unitData.division);
+          setHativa(reviewData.unitData.brigade);
+          setUnit(reviewData.unitData.unit);
           setLoading(false);
         } else {
           throw new Error();
@@ -52,20 +56,33 @@ const ChooseUnit = (props) => {
     getUnits();
   }, [setLoading]);
 
-  // change context if something changes
+  // auto fill if the unit data is in the review's context
   useEffect(() => {
-    changeUnit({
-      unit: unit,
-      command: pikud,
-      division: ogda,
-      brigade: hativa,
-    });
-  }, [unit, pikud, ogda, hativa]);
+    if (fetchRes.length > 0) {
+      if (!!reviewData.unitData.command && reviewData.unitData.command !== "") {
+        setPikud(reviewData.unitData.command);
+        const commandIndex = fetchRes.findIndex(
+          (command) => command._id === reviewData.unitData.command
+        );
+        console.log(commandIndex);
+        if (commandIndex >= 0) {
+          setCurrentCommandIndex(commandIndex);
+        }
+      }
+    }
+  }, [fetchRes]);
 
   // change context if something changes
   useEffect(() => {
-    console.log(reviewData.unitData);
-  }, [reviewData]);
+    if (!!unit && unit !== "") {
+      changeUnit({
+        unit: unit,
+        command: pikud,
+        division: ogda,
+        brigade: hativa,
+      });
+    }
+  }, [unit, pikud, ogda, hativa]);
 
   // when command changes
   useEffect(() => {
@@ -75,6 +92,22 @@ const ChooseUnit = (props) => {
       setUnitsToChoose([...fetchRes[currentCommandIndex].directUnits]);
     } else {
       setUnitsToChoose([]);
+    }
+
+    // if there is division in the review context
+    if (
+      !!reviewData.unitData.division &&
+      reviewData.unitData.division !== "" &&
+      !!currentCommandIndex
+    ) {
+      setOgda(reviewData.unitData.division);
+      console.log(currentCommandIndex);
+      const divisionIndex = fetchRes[currentCommandIndex].divisions.findIndex(
+        (division) => division._id === reviewData.unitData.division
+      );
+      if (divisionIndex >= 0) {
+        setCurrentDivisionIndex(divisionIndex);
+      }
     }
   }, [currentCommandIndex]);
 
@@ -91,6 +124,24 @@ const ChooseUnit = (props) => {
         setUnitsToChoose([...fetchRes[currentCommandIndex].directUnits]);
       } else {
         setUnitsToChoose([]);
+      }
+    }
+
+    // if the division is updated and there is a brigade in the review context
+    if (
+      !!reviewData.unitData.brigade &&
+      reviewData.unitData.brigade !== "" &&
+      !!currentDivisionIndex
+    ) {
+      setHativa(reviewData.unitData.brigade);
+      console.log(currentDivisionIndex);
+      const brigadeIndex = fetchRes[currentCommandIndex].divisions[
+        currentDivisionIndex
+      ].brigades.findIndex(
+        (brigade) => brigade._id === reviewData.unitData.brigade
+      );
+      if (brigadeIndex >= 0) {
+        setCurrentBrigadeIndex(brigadeIndex);
       }
     }
   }, [currentDivisionIndex]);
@@ -116,6 +167,10 @@ const ChooseUnit = (props) => {
         }
       }
     }
+
+    // if (!!reviewData.unitData.unit && reviewData.unitData.unit !== "") {
+    //   setUnit(reviewData.unitData.unit);
+    // }
   }, [currentBrigadeIndex]);
 
   return (
