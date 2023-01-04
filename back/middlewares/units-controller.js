@@ -67,7 +67,9 @@ const getAverages = async (req, res, next) => {
       // check if the user made this review is a manager
       {
         $match: {
-          "userData.perms": "manager",
+          "userData.perms": {
+            $in: ["manager", "global"]
+          },
         },
       },
       // group all of the winded units objects by their ids and then enter their names, echelons and get their average score

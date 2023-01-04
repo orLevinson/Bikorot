@@ -17,6 +17,9 @@ const router = express.Router();
 // edit a review - by the author or anyone equal or above manager - checkS
 // get scores - a tree of units with 2 kinds of scores - reviewers' score and managers' score
 
+// get review by id
+router.get("/:rid",reviewsController.getReviewById);
+
 // getting reviews by filters
 // there is an annoying bug in JS that dont allow me to have
 // body inside a GET req, so I changed it to post

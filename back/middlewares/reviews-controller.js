@@ -15,6 +15,25 @@ const Info = require("../models/info");
 
 const scoreRangeFinder = require("../templates/scoreRangeFinder");
 
+const getReviewById = async (req, res, next) => {
+  const reviewId = req.params.rid;
+  let review;
+  if (!reviewId || !mongoose.Types.ObjectId.isValid(reviewId)) {
+    const error = new HttpError("invalid id entered", 500);
+    return next(error);
+  } else {
+    try {
+      review = await Review.findById(reviewId).populate(
+        "command division brigade unit"
+      );
+    } catch (err) {
+      const error = new HttpError("unknown error occured", 500);
+      return next(error);
+    }
+  }
+  res.json({ success: true, review });
+};
+
 const getReviewsByFilters = async (req, res, next) => {
   const { date, unit } = req.body;
   const dateObj = new Date(date);
@@ -47,7 +66,6 @@ const getReviewsByFilters = async (req, res, next) => {
     }
 
     units.forEach((i) => {
-      console.log(i);
       const reviewObjects = i.reviews.map((r) => r.toObject({ getters: true }));
       reviews = [...reviews, ...reviewObjects];
     });
@@ -130,12 +148,15 @@ const getReviewsByAuthor = async (req, res, next) => {
     }
 
     units.forEach((i) => {
-      console.log(i);
       const reviewObjects = i.reviews.map((r) => r.toObject({ getters: true }));
       reviews = [...reviews, ...reviewObjects];
     });
 
-    reviews = reviews.filter((i) => i.author._id.equals(authorId));
+    reviews = reviews.filter((i) => {
+      console.log(i.author);
+      console.log(authorId);
+      return !!i.author && i.author._id.equals(authorId);
+    });
   }
 
   if (date && !unit) {
@@ -568,8 +589,10 @@ const checkUserAuthEdit = async (req, res, next) => {
     !review ||
     !user ||
     (!review.author.equals(user._id) &&
-      (user.perms !== "global" || user.perms !== "manager"))
+      user.perms !== "global" &&
+      user.perms !== "manager")
   ) {
+    console.log(user.perms);
     const error = new HttpError(
       "You aren't authorized to make changed to that review",
       401
@@ -983,6 +1006,7 @@ const editReview = async (req, res, next) => {
   res.json({ success: true, review: storedReview });
 };
 
+exports.getReviewById = getReviewById;
 exports.getReviewsByFilters = getReviewsByFilters;
 exports.getReviewsByAuthor = getReviewsByAuthor;
 exports.addReview = addReview;
