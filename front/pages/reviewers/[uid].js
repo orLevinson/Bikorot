@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
 import { contextData } from "../../context/context";
 // @material-ui/core
@@ -16,11 +16,10 @@ import CardHeader from "../../components/Card/CardHeader";
 import GridContainer from "../../components/Grid/GridContainer";
 import Card from "../../components/Card/Card";
 import Table from "../../components/Table/Table";
-import { Fab, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import CardBody from "../../components/Card/CardBody";
 import SearchBar from "../../components/reviewers-page/searchBar/SearchBar.js";
 import Button from "../../components/reviewers-page/button/Button";
-import Plus from "@material-ui/icons/Add";
 import Snackbar from "../../components/Snackbar/Snackbar";
 
 import "../../css/dashboard.css";
@@ -61,6 +60,7 @@ function RTLPage() {
   const useStyles = makeStyles(styles);
   const classes = useStyles();
   const [reviews, setReviews] = useState([]);
+  const [reviewForTable, setReviewsForTable] = useState([]);
   const [name, setName] = useState("");
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [loading, setLoading] = useState(false);
@@ -105,23 +105,10 @@ function RTLPage() {
           Authorization: Context.userData.token,
         }
       );
-
+      // load initial reviews
       if (!!response.success && !!response.reviews) {
-        const reviewsArray = [];
         setName(response.name);
-        response.reviews.forEach((review) => {
-          const reviewArr = [];
-          reviewArr.push(review.unit.name);
-          const dateObj = new Date(review.dateCreated);
-          const dateStr = `${dateObj.getDate()} / ${
-            dateObj.getMonth() + 1
-          } / ${dateObj.getFullYear()}`;
-          reviewArr.push(dateStr);
-          reviewArr.push(parseInt(review.Score).toFixed(0));
-          reviewArr.push(<Button id={review._id} />);
-          reviewsArray.push(reviewArr);
-        });
-        setReviews(reviewsArray);
+        setReviews(response.reviews);
         setLoading(false);
       } else {
         throw new Error();
@@ -132,6 +119,26 @@ function RTLPage() {
       openModal("danger", "קרתה תקלה במהלך שליפת הנתונים");
     }
   };
+
+  // rearrange existing reviews
+  useEffect(() => {
+    const reviewsArray = [];
+    reviews.forEach((review) => {
+      const reviewArr = [];
+      reviewArr.push(review.unit.name);
+      const dateObj = new Date(review.dateCreated);
+      const dateStr = `${dateObj.getDate()} / ${
+        dateObj.getMonth() + 1
+      } / ${dateObj.getFullYear()}`;
+      reviewArr.push(dateStr);
+      reviewArr.push(parseInt(review.Score).toFixed(0));
+      reviewArr.push(
+        <Button id={review._id} deleteReviewHandler={deleteReviewHandler} />
+      );
+      reviewsArray.push(reviewArr);
+    });
+    setReviewsForTable(reviewsArray);
+  }, [reviews]);
 
   useEffect(() => {
     const isManager =
@@ -144,6 +151,42 @@ function RTLPage() {
       getUserReviews();
     }
   }, [Context]);
+
+  // delete review item
+  const deleteReviewHandler = useCallback(
+    async (id) => {
+      try {
+        setLoading(true);
+        const response = await sendRequest(
+          `${process.env.NEXT_PUBLIC_API_ADDRESS}api/reviews/${id}`,
+          "DELETE",
+          null,
+          {
+            "Content-Type": "application/json",
+            Authorization: Context.userData.token,
+          }
+        );
+
+        if (!!response.success) {
+          setReviews((prev) => prev.filter((i) => i._id !== id));
+          openModal("success", "הביקורת נמחקה בהצלחה");
+          setLoading(false);
+        }
+      } catch (err) {
+        clearError();
+        setLoading(false);
+        openModal("danger", "קרתה תקלה במהלך מחיקת הביקורת");
+      }
+    },
+    [
+      setReviews,
+      openModal,
+      setLoading,
+      clearError,
+      Context.userData,
+      sendRequest,
+    ]
+  );
 
   return (
     <>
@@ -170,7 +213,7 @@ function RTLPage() {
                     "ציון סופי",
                     "פעולות",
                   ]}
-                  tableData={reviews}
+                  tableData={reviewForTable}
                 />
               </CardBody>
             </Card>

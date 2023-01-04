@@ -18,43 +18,37 @@ import questionsObj from "../../questionsObj";
 import reviewTemplate from "../../reviewTemplate";
 import { reviewContextData } from "../../context/contextReview";
 
-export default function Subject3(props) {
+export default function Subject4(props) {
   const [categories, setCategories] = useState([]);
-  const [files, setFiles] = useState([]);
-  const { reviewData, changeSubject3 } = useContext(reviewContextData);
+  const { reviewData, changeSubject4 } = useContext(reviewContextData);
   const currentlyOpen = useRef(0);
+
   useEffect(() => {
     // on load set the reviewContext data in the values state also
     // load the initial questions into the blocks and set the categories
 
     let currentSubject = [];
 
-    for (const [key, value] of Object.entries(questionsObj.subject3)) {
+    for (const [key, value] of Object.entries(questionsObj.subject4)) {
       currentSubject.push(value);
     }
 
-    let currentSubjectFiles = [];
-
-    for (const [key, value] of Object.entries(props.files)) {
-      currentSubjectFiles.push(value);
-    }
-
     setCategories(currentSubject);
-    setFiles(currentSubjectFiles);
   }, []);
+
 
   const changeHandler = useCallback(
     (value, category, index, type) => {
-      let copy = { ...reviewData.scores.subject3 };
+      let copy = { ...reviewData.scores.subject4 };
       copy[category][index][
         type === "score" ? "score" : "text"
       ] = value;
-      changeSubject3(copy);
+      changeSubject4(copy);
     },
-    [reviewData, changeSubject3]
+    [reviewData, changeSubject4]
   );
 
-  if (!!reviewData.scores.subject3 && categories.length > 0) {
+  if (!!reviewData.scores.subject4 && categories.length > 0) {
     return (
       <div>
         {categories.map((category, index) => {
@@ -73,26 +67,16 @@ export default function Subject3(props) {
               </AccordionSummary>
               <AccordionDetails>
                 <GridContainer fullWidth>
-                  {category.questions.map((question, qIndex) => {
-                    let filePath = null;
-                    if (Array.isArray(files[index])) {
-                      if (
-                        typeof files[index][qIndex] === "object" &&
-                        !!files[index][qIndex].path
-                      ) {
-                        filePath = files[index][qIndex].path;
-                      }
-                    }
-                   return (
-                     <GridItem
-                       lg={6}
-                       key={question.text + question.subject + Math.random()}
-                     >
-                       <Card>
-                         <QuestionItem
-                          filePath={filePath}
+                  {category.questions.map((question) => {
+                    return (
+                      <GridItem
+                        lg={6}
+                        key={question.text + question.subject + Math.random()}
+                      >
+                        <Card>
+                          <QuestionItem
                             valueScore={
-                              reviewData.scores.subject3[question.category][
+                              reviewData.scores.subject4[question.category][
                                 question.index
                               ].score
                             }
@@ -105,7 +89,7 @@ export default function Subject3(props) {
                               );
                             }}
                             valueText={
-                              reviewData.scores.subject3[question.category][
+                              reviewData.scores.subject4[question.category][
                                 question.index
                               ].text
                             }

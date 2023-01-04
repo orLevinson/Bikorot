@@ -20,7 +20,6 @@ import { reviewContextData } from "../../context/contextReview";
 
 export default function Subject3(props) {
   const [categories, setCategories] = useState([]);
-  const [files, setFiles] = useState([]);
   const { reviewData, changeSubject3 } = useContext(reviewContextData);
   const currentlyOpen = useRef(0);
   useEffect(() => {
@@ -33,14 +32,7 @@ export default function Subject3(props) {
       currentSubject.push(value);
     }
 
-    let currentSubjectFiles = [];
-
-    for (const [key, value] of Object.entries(props.files)) {
-      currentSubjectFiles.push(value);
-    }
-
     setCategories(currentSubject);
-    setFiles(currentSubjectFiles);
   }, []);
 
   const changeHandler = useCallback(
@@ -73,24 +65,14 @@ export default function Subject3(props) {
               </AccordionSummary>
               <AccordionDetails>
                 <GridContainer fullWidth>
-                  {category.questions.map((question, qIndex) => {
-                    let filePath = null;
-                    if (Array.isArray(files[index])) {
-                      if (
-                        typeof files[index][qIndex] === "object" &&
-                        !!files[index][qIndex].path
-                      ) {
-                        filePath = files[index][qIndex].path;
-                      }
-                    }
-                   return (
-                     <GridItem
-                       lg={6}
-                       key={question.text + question.subject + Math.random()}
-                     >
-                       <Card>
-                         <QuestionItem
-                          filePath={filePath}
+                  {category.questions.map((question) => {
+                    return (
+                      <GridItem
+                        lg={6}
+                        key={question.text + question.subject + Math.random()}
+                      >
+                        <Card>
+                          <QuestionItem
                             valueScore={
                               reviewData.scores.subject3[question.category][
                                 question.index

@@ -90,7 +90,7 @@ function RTLPage(props) {
       const nameHeader = (
         <span
           onClick={() => {
-            router.push("/showReview/" + data[i].id);
+            router.push("showReview/" + data[i]._id);
           }}
         >
           {!!data[i].unit ? data[i].unit.name : "חסר שם יחידה"}

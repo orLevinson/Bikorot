@@ -17,10 +17,9 @@ import QuestionItem from "./QuestionItem";
 import questionsObj from "../../questionsObj";
 import { reviewContextData } from "../../context/contextReview";
 
-export default function Subject1(props) {
+export default function Subject6(props) {
   const [categories, setCategories] = useState([]);
-  const [files, setFiles] = useState([]);
-  const { reviewData, changeSubject1 } = useContext(reviewContextData);
+  const { reviewData } = useContext(reviewContextData);
   const currentlyOpen = useRef(0);
 
   useEffect(() => {
@@ -29,30 +28,14 @@ export default function Subject1(props) {
 
     let currentSubject = [];
 
-    for (const [key, value] of Object.entries(questionsObj.subject1)) {
+    for (const [key, value] of Object.entries(questionsObj.subject6)) {
       currentSubject.push(value);
     }
 
-    let currentSubjectFiles = [];
-
-    for (const [key, value] of Object.entries(props.files)) {
-      currentSubjectFiles.push(value);
-    }
-
     setCategories(currentSubject);
-    setFiles(currentSubjectFiles);
   }, []);
 
-  const changeHandler = useCallback(
-    (value, category, index, type) => {
-      let copy = { ...reviewData.scores.subject1 };
-      copy[category][index][type === "score" ? "score" : "text"] = value;
-      changeSubject1(copy);
-    },
-    [reviewData, changeSubject1]
-  );
-
-  if (!!reviewData.scores.subject1 && categories.length > 0) {
+  if (!!reviewData.scores.subject6 && categories.length > 0) {
     return (
       <div>
         {categories.map((category, index) => {
@@ -71,16 +54,7 @@ export default function Subject1(props) {
               </AccordionSummary>
               <AccordionDetails>
                 <GridContainer fullWidth>
-                  {category.questions.map((question, qIndex) => {
-                    let filePath = null;
-                    if (Array.isArray(files[index])) {
-                      if (
-                        typeof files[index][qIndex] === "object" &&
-                        !!files[index][qIndex].path
-                      ) {
-                        filePath = files[index][qIndex].path;
-                      }
-                    }
+                  {category.questions.map((question) => {
                     return (
                       <GridItem
                         lg={6}
@@ -88,33 +62,16 @@ export default function Subject1(props) {
                       >
                         <Card>
                           <QuestionItem
-                            filePath={filePath}
                             valueScore={
-                              reviewData.scores.subject1[question.category][
+                              reviewData.scores.subject6[question.category][
                                 question.index
                               ].score
                             }
-                            changeValueScore={(e) => {
-                              changeHandler(
-                                e,
-                                question.category,
-                                question.index,
-                                "score"
-                              );
-                            }}
                             valueText={
-                              reviewData.scores.subject1[question.category][
+                              reviewData.scores.subject6[question.category][
                                 question.index
                               ].text
                             }
-                            changeValueText={(value) => {
-                              changeHandler(
-                                value,
-                                question.category,
-                                question.index,
-                                "text"
-                              );
-                            }}
                             question={question.text}
                           />
                         </Card>

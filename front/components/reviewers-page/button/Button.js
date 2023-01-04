@@ -2,11 +2,13 @@ import { Fab, Menu, MenuItem } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import HourglassEmptyIcon from "@material-ui/icons/HourglassEmpty";
 import React from "react";
+import {useRouter} from "next/router";
 
 const Button = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [loading, setLoading] = React.useState(false);
+  const router = useRouter();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -57,7 +59,7 @@ const Button = (props) => {
           <MenuItem
             onClick={() => {
               handleClose();
-              props.showDoc(id, "CVFile");
+              router.push("showReview/"+props.id);
             }}
           >
             צפה בתוכן הביקורת
@@ -65,7 +67,7 @@ const Button = (props) => {
           <MenuItem
             onClick={() => {
               handleClose();
-              props.showDoc(id, "AlamFile");
+            // need to be done
             }}
           >
             ערוך את הביקורת
@@ -74,7 +76,7 @@ const Button = (props) => {
             onClick={async () => {
               handleClose();
               setLoading(true);
-              await props.deleteContender(id);
+              await props.deleteReviewHandler(id);
               setLoading(false);
             }}
           >

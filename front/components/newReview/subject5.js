@@ -20,6 +20,7 @@ import { reviewContextData } from "../../context/contextReview";
 
 export default function Subject5(props) {
   const [categories, setCategories] = useState([]);
+  const [files, setFiles] = useState([]);
   const { reviewData, changeSubject5 } = useContext(reviewContextData);
   const currentlyOpen = useRef(0);
 
@@ -33,7 +34,14 @@ export default function Subject5(props) {
       currentSubject.push(value);
     }
 
+    let currentSubjectFiles = [];
+
+    for (const [key, value] of Object.entries(props.files)) {
+      currentSubjectFiles.push(value);
+    }
+
     setCategories(currentSubject);
+    setFiles(currentSubjectFiles);
   }, []);
 
   const changeHandler = useCallback(
@@ -66,14 +74,24 @@ export default function Subject5(props) {
               </AccordionSummary>
               <AccordionDetails>
                 <GridContainer fullWidth>
-                  {category.questions.map((question) => {
-                    return (
-                      <GridItem
-                        lg={6}
-                        key={question.text + question.subject + Math.random()}
-                      >
-                        <Card>
-                          <QuestionItem
+                  {category.questions.map((question, qIndex) => {
+                   let filePath = null;
+                   if (Array.isArray(files[index])) {
+                     if (
+                       typeof files[index][qIndex] === "object" &&
+                       !!files[index][qIndex].path
+                     ) {
+                       filePath = files[index][qIndex].path;
+                     }
+                   }
+                  return (
+                    <GridItem
+                      lg={6}
+                      key={question.text + question.subject + Math.random()}
+                    >
+                      <Card>
+                        <QuestionItem
+                         filePath={filePath}
                             valueScore={
                               reviewData.scores.subject5[question.category][
                                 question.index

@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
 import { contextData } from "../../context/context";
 // @material-ui/core
@@ -60,6 +60,7 @@ function RTLPage(props) {
   const useStyles = makeStyles(styles);
   const classes = useStyles();
   const [reviews, setReviews] = useState([]);
+  const [reviewForTable, setReviewsForTable] = useState([]);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [loading, setLoading] = useState(false);
   const [modalState, setModalState] = useState({
@@ -103,21 +104,9 @@ function RTLPage(props) {
         }
       );
 
+
       if (!!response.success && !!response.reviews) {
-        const reviewsArray = [];
-        response.reviews.forEach((review) => {
-          const reviewArr = [];
-          reviewArr.push(review.unit.name);
-          const dateObj = new Date(review.dateCreated);
-          const dateStr = `${dateObj.getDate()} / ${
-            dateObj.getMonth() + 1
-          } / ${dateObj.getFullYear()}`;
-          reviewArr.push(dateStr);
-          reviewArr.push(parseInt(review.Score).toFixed(0));
-          reviewArr.push(<Button id={review._id} />);
-          reviewsArray.push(reviewArr);
-        });
-        setReviews(reviewsArray);
+        setReviews(response.reviews);
         setLoading(false);
       } else {
         throw new Error();
@@ -129,6 +118,26 @@ function RTLPage(props) {
     }
   };
 
+  // rearrange existing reviews
+  useEffect(() => {
+    const reviewsArray = [];
+    reviews.forEach((review) => {
+      const reviewArr = [];
+      reviewArr.push(review.unit.name);
+      const dateObj = new Date(review.dateCreated);
+      const dateStr = `${dateObj.getDate()} / ${
+        dateObj.getMonth() + 1
+      } / ${dateObj.getFullYear()}`;
+      reviewArr.push(dateStr);
+      reviewArr.push(parseInt(review.Score).toFixed(0));
+      reviewArr.push(
+        <Button id={review._id} deleteReviewHandler={deleteReviewHandler} />
+      );
+      reviewsArray.push(reviewArr);
+    });
+    setReviewsForTable(reviewsArray);
+  }, [reviews]);
+
   useEffect(() => {
     const isUserAuthenticated = !!Context.userData.token;
     if (!isUserAuthenticated) {
@@ -138,6 +147,42 @@ function RTLPage(props) {
       getUserReviews();
     }
   }, [Context]);
+
+  // delete review item
+  const deleteReviewHandler = useCallback(
+    async (id) => {
+      try {
+        setLoading(true);
+        const response = await sendRequest(
+          `${process.env.NEXT_PUBLIC_API_ADDRESS}api/reviews/${id}`,
+          "DELETE",
+          null,
+          {
+            "Content-Type": "application/json",
+            Authorization: Context.userData.token,
+          }
+        );
+
+        if (!!response.success) {
+          setReviews((prev) => prev.filter((i) => i._id !== id));
+          openModal("success", "הביקורת נמחקה בהצלחה");
+          setLoading(false);
+        }
+      } catch (err) {
+        clearError();
+        setLoading(false);
+        openModal("danger", "קרתה תקלה במהלך מחיקת הביקורת");
+      }
+    },
+    [
+      setReviews,
+      openModal,
+      setLoading,
+      clearError,
+      Context.userData,
+      sendRequest,
+    ]
+  );
 
   return (
     <>
@@ -162,7 +207,7 @@ function RTLPage(props) {
                     "ציון סופי",
                     "פעולות",
                   ]}
-                  tableData={reviews}
+                  tableData={reviewForTable}
                 />
               </CardBody>
             </Card>

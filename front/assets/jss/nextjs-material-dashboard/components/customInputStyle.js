@@ -8,6 +8,8 @@ import {
 
 const customInputStyle = {
   disabled: {
+    color:"#343434",
+    cursor:"pointer",
     "&:before": {
       backgroundColor: "transparent !important",
     },

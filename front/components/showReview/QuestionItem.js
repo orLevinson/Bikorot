@@ -5,32 +5,10 @@ import GridItem from "../Grid/GridItem";
 import RegularButton from "../CustomButtons/Button";
 
 const QuestionItem = (props) => {
-  const { valueScore, changeValueScore, valueText, changeValueText, question } =
+  const { valueScore, valueText, question } =
     props;
   const [score, setScore] = useState(valueScore);
   const [text, setText] = useState(valueText);
-
-  useEffect(() => {
-    const debounce = setTimeout(() => {
-      if (score !== valueScore) {
-        changeValueScore(score);
-      }
-    }, 500);
-    return () => {
-      clearTimeout(debounce);
-    };
-  }, [score]);
-
-  useEffect(() => {
-    const debounce = setTimeout(() => {
-      if (text !== valueText) {
-        changeValueText(text);
-      }
-    }, 500);
-    return () => {
-      clearTimeout(debounce);
-    };
-  }, [text]);
 
   return (
     <div style={{ margin: 15 }}>
@@ -44,13 +22,7 @@ const QuestionItem = (props) => {
             type="number"
             inputProps={{
               value: score,
-              onChange: (e) => {
-                if (e.target.value > 100 || e.target.value < 0) {
-                  return;
-                } else {
-                  setScore(e.target.value);
-                }
-              },
+              disabled:true
             }}
             id="passwordInput"
             formControlProps={{
@@ -60,17 +32,8 @@ const QuestionItem = (props) => {
           />
         </GridItem>
         <GridItem xs={4} md={4} sm={4}>
-          {/* ADD OPEN FILE */}
-          <a
-            href={!!props.filePath ? `${process.env.NEXT_PUBLIC_API_ADDRESS}${props.filePath}` : '#'}
-            target={!!props.filePath ? "_blank" : '_self'}
-          >
-            <RegularButton color={"primary"} fullWidth>
-              קובץ מחוון
-            </RegularButton>
-          </a>
         </GridItem>
-        <GridItem xs={4} md={4} sm={4}></GridItem>
+        <GridItem xs={8} md={8} sm={8}></GridItem>
         <GridItem xs={12} md={12} sm={12}>
           <CustomInput
             labelText={"פירוט"}
@@ -81,9 +44,7 @@ const QuestionItem = (props) => {
             }}
             inputProps={{
               value: text,
-              onChange: (e) => {
-                setText(e.target.value);
-              },
+              disabled:true,
               multiline: true,
               rows: 3,
             }}

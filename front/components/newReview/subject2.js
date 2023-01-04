@@ -20,6 +20,7 @@ import { reviewContextData } from "../../context/contextReview";
 
 export default function Subject2(props) {
   const [categories, setCategories] = useState([]);
+  const [files, setFiles] = useState([]);
   const { reviewData, changeSubject2 } = useContext(reviewContextData);
   const currentlyOpen = useRef(0);
 
@@ -27,13 +28,21 @@ export default function Subject2(props) {
     // on load set the reviewContext data in the values state also
     // load the initial questions into the blocks and set the categories
 
+
     let currentSubject = [];
 
     for (const [key, value] of Object.entries(questionsObj.subject2)) {
       currentSubject.push(value);
     }
 
+    let currentSubjectFiles = [];
+
+    for (const [key, value] of Object.entries(props.files)) {
+      currentSubjectFiles.push(value);
+    }
+
     setCategories(currentSubject);
+    setFiles(currentSubjectFiles);
   }, []);
 
   const changeHandler = useCallback(
@@ -66,7 +75,16 @@ export default function Subject2(props) {
               </AccordionSummary>
               <AccordionDetails>
                 <GridContainer fullWidth>
-                  {category.questions.map((question) => {
+                  {category.questions.map((question,qIndex) => {
+                     let filePath = null;
+                     if (Array.isArray(files[index])) {
+                       if (
+                         typeof files[index][qIndex] === "object" &&
+                         !!files[index][qIndex].path
+                       ) {
+                         filePath = files[index][qIndex].path;
+                       }
+                     }
                     return (
                       <GridItem
                         lg={6}
@@ -74,6 +92,7 @@ export default function Subject2(props) {
                       >
                         <Card>
                           <QuestionItem
+                           filePath={filePath}
                             valueScore={
                               reviewData.scores.subject2[question.category][
                                 question.index

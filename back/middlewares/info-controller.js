@@ -161,16 +161,14 @@ const changeFile = async (req, res, next) => {
     info["subject" + subject]["category" + category].files[
       Math.round(parseInt(question))
     ] = fileObj._id;
-    await Promise.all([
-      info.save({ session: sess }),
-      fileObj.save({ session: sess }),
-    ]);
+    await info.save({ session: sess });
+    await fileObj.save({ session: sess });
     await sess.commitTransaction(); //only now the changes will apply in the database
 
     await sess.endSession();
   } catch (err) {
     return next(
-      new HttpError("Could not change the file,please try again later", 500)
+      new HttpError(err, 500)
     );
   }
 

@@ -60,6 +60,7 @@ const ChooseUnit = (props) => {
   useEffect(() => {
     if (fetchRes.length > 0) {
       if (!!reviewData.unitData.command && reviewData.unitData.command !== "") {
+        setUnit(reviewData.unitData.unit);
         setPikud(reviewData.unitData.command);
         const commandIndex = fetchRes.findIndex(
           (command) => command._id === reviewData.unitData.command
@@ -74,7 +75,7 @@ const ChooseUnit = (props) => {
 
   // change context if something changes
   useEffect(() => {
-    if (!!unit && unit !== "") {
+    if (!!unit && unit !== "" && !!pikud && pikud !== "") {
       changeUnit({
         unit: unit,
         command: pikud,
@@ -133,8 +134,15 @@ const ChooseUnit = (props) => {
       reviewData.unitData.brigade !== "" &&
       !!currentDivisionIndex
     ) {
-      setHativa(reviewData.unitData.brigade);
-      console.log(currentDivisionIndex);
+      // setOgda(reviewData.unitData.division);
+      // console.log(currentCommandIndex);
+      // const divisionIndex = fetchRes[currentCommandIndex].divisions.findIndex(
+      //   (division) => division._id === reviewData.unitData.division
+      // );
+      // if (divisionIndex >= 0) {
+      //   setCurrentDivisionIndex(divisionIndex);
+      // }
+      console.log({currentBrigadeIndex});
       const brigadeIndex = fetchRes[currentCommandIndex].divisions[
         currentDivisionIndex
       ].brigades.findIndex(
@@ -142,16 +150,17 @@ const ChooseUnit = (props) => {
       );
       if (brigadeIndex >= 0) {
         setCurrentBrigadeIndex(brigadeIndex);
+        setHativa(reviewData.unitData.brigade);
       }
     }
-  }, [currentDivisionIndex]);
+  }, [currentDivisionIndex,ogda]);
 
   // when brigade changes
   useEffect(() => {
     if (currentBrigadeIndex !== null) {
       setUnitsToChoose([
         ...fetchRes[currentCommandIndex].divisions[currentDivisionIndex]
-          .brigades[currentDivisionIndex].units,
+          .brigades[currentBrigadeIndex].units,
       ]);
     } else {
       if (currentDivisionIndex !== null) {
@@ -167,11 +176,10 @@ const ChooseUnit = (props) => {
         }
       }
     }
-
     // if (!!reviewData.unitData.unit && reviewData.unitData.unit !== "") {
     //   setUnit(reviewData.unitData.unit);
     // }
-  }, [currentBrigadeIndex]);
+  }, [currentBrigadeIndex,hativa]);
 
   return (
     <div>
