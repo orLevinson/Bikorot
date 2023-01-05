@@ -47,6 +47,8 @@ const QuestionItem = (props) => {
               onChange: (e) => {
                 if (e.target.value > 100 || e.target.value < 0) {
                   return;
+                } else if (e.target.value === "") {
+                  setScore(0);
                 } else {
                   setScore(e.target.value);
                 }
@@ -62,8 +64,12 @@ const QuestionItem = (props) => {
         <GridItem xs={4} md={4} sm={4}>
           {/* ADD OPEN FILE */}
           <a
-            href={!!props.filePath ? `${process.env.NEXT_PUBLIC_API_ADDRESS}${props.filePath}` : '#'}
-            target={!!props.filePath ? "_blank" : '_self'}
+            href={
+              !!props.filePath
+                ? `${process.env.NEXT_PUBLIC_API_ADDRESS}${props.filePath}`
+                : "#"
+            }
+            target={!!props.filePath ? "_blank" : "_self"}
           >
             <RegularButton color={"primary"} fullWidth>
               קובץ מחוון

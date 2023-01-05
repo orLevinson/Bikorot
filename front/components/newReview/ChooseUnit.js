@@ -115,7 +115,7 @@ const ChooseUnit = (props) => {
   // when division changes
   useEffect(() => {
     setCurrentBrigadeIndex(null);
-    if (currentDivisionIndex !== null) {
+    if (currentDivisionIndex !== null && currentCommandIndex !== null) {
       setUnitsToChoose([
         ...fetchRes[currentCommandIndex].divisions[currentDivisionIndex]
           .directUnits,
@@ -142,7 +142,7 @@ const ChooseUnit = (props) => {
       // if (divisionIndex >= 0) {
       //   setCurrentDivisionIndex(divisionIndex);
       // }
-      console.log({currentBrigadeIndex});
+      console.log({ currentBrigadeIndex });
       const brigadeIndex = fetchRes[currentCommandIndex].divisions[
         currentDivisionIndex
       ].brigades.findIndex(
@@ -153,11 +153,15 @@ const ChooseUnit = (props) => {
         setHativa(reviewData.unitData.brigade);
       }
     }
-  }, [currentDivisionIndex,ogda]);
+  }, [currentDivisionIndex, ogda]);
 
   // when brigade changes
   useEffect(() => {
-    if (currentBrigadeIndex !== null) {
+    if (
+      currentBrigadeIndex !== null &&
+      currentDivisionIndex !== null &&
+      currentCommandIndex !== null
+    ) {
       setUnitsToChoose([
         ...fetchRes[currentCommandIndex].divisions[currentDivisionIndex]
           .brigades[currentBrigadeIndex].units,
@@ -179,7 +183,7 @@ const ChooseUnit = (props) => {
     // if (!!reviewData.unitData.unit && reviewData.unitData.unit !== "") {
     //   setUnit(reviewData.unitData.unit);
     // }
-  }, [currentBrigadeIndex,hativa]);
+  }, [currentBrigadeIndex, hativa]);
 
   return (
     <div>

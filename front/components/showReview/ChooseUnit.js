@@ -4,15 +4,10 @@ import CardBody from "../Card/CardBody";
 import GridContainer from "../Grid/GridContainer";
 import GridItem from "../Grid/GridItem";
 import {
-  CircularProgress,
   FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
 } from "@material-ui/core";
 import "../../css/dashboard.css";
 import RegularButton from "../CustomButtons/Button";
-import { useHttpClient } from "../Hooks/http-hook";
 import { reviewContextData } from "../../context/contextReview";
 import CustomInput from "../CustomInput/CustomInput";
 
@@ -25,7 +20,6 @@ const ChooseUnit = (props) => {
 
   // get units and show the title of them
   useEffect(() => {
-    console.log(reviewData.unitData);
     setPikud(reviewData.unitData.command);
     setOgda(reviewData.unitData.division);
     setHativa(reviewData.unitData.brigade);
@@ -38,7 +32,7 @@ const ChooseUnit = (props) => {
         <GridItem xs={12} sm={8} md={6} marginauto={true}>
           <Card login={true}>
             <CardBody>
-              <h3>בחירת היחידה לביקורת</h3>
+              <h3>נתוני היחידה - יחידות האם</h3>
               <FormControl fullWidth>
                 <CustomInput
                   labelText="פיקוד"

@@ -8,7 +8,7 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import NewReviewSelector from "../../components/newReview/newReviewSelector";
+import EditReviewSelector from "../../components/editReview/EditReviewSelector";
 import {
   reviewContextData,
   ReviewContextProvider,
@@ -35,12 +35,13 @@ const steps = [
 ];
 
 function HorizontalLinearStepper(props) {
+console.log(props);
+
   const { classes } = props;
   const router = useRouter();
   const Context = useContext(contextData);
   const reviewContext = useContext(reviewContextData);
   const [loading, setLoading] = useState(false);
-  const [files, setFiles] = useState(props.files);
   const [activeStep, setActiveStep] = useState(0);
   const [modalState, setModalState] = useState({
     color: "",
@@ -151,8 +152,9 @@ function HorizontalLinearStepper(props) {
           </Box>
         </React.Fragment>
       </Box>
-      <NewReviewSelector
-        files={files}
+      <EditReviewSelector
+        review={props.review}
+        files={props.files}
         openModal={openModal}
         next={handleNext}
         step={activeStep}
@@ -205,7 +207,7 @@ export async function getServerSideProps(context) {
     }
 
     const parsedResponseReview = await responseReview.json();
-    const parsedResponseFiles = await responseReview.json();
+    const parsedResponseFiles = await responseFiles.json();
 
     if (!parsedResponseReview || !parsedResponseFiles) {
       throw new Error("fetching content failed");

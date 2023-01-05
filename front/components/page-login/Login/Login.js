@@ -75,9 +75,6 @@ const Login = (props) => {
                     "להתחברות לחצו כאן"
                   )}
                 </Button>
-                <Button color="rose" fullWidth>
-                  שכחתי סיסמא
-                </Button>
                 <Button
                   color="info"
                   fullWidth

@@ -59,7 +59,7 @@ const Button = (props) => {
           <MenuItem
             onClick={() => {
               handleClose();
-              router.push("showReview/"+props.id);
+              router.replace("/showReview/"+props.id);
             }}
           >
             צפה בתוכן הביקורת
@@ -67,7 +67,7 @@ const Button = (props) => {
           <MenuItem
             onClick={() => {
               handleClose();
-            // need to be done
+              router.replace("/editReview/"+props.id);
             }}
           >
             ערוך את הביקורת

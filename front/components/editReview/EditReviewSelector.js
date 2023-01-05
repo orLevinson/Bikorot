@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+import React, { useContext, useMemo, useState, useEffect} from "react";
+import { reviewContextData } from "../../context/contextReview";
 import ChooseUnit from "./ChooseUnit";
 import Subject1 from "./subject1";
 import Subject2 from "./subject2";
@@ -8,12 +9,45 @@ import Subject5 from "./subject5";
 import Subject6 from "./subject6";
 import Summary from "./Summary";
 
-const NewReviewSelector = (props) => {
-  const { step } = props;
+const EditReviewSelector = (props) => {
+  const { step, review } = props;
+  const { loadInitialData } = useContext(reviewContextData);
+  const [names, setNames] = useState({
+    unit: null,
+    command: null,
+    division: null,
+    brigade: null,
+  });
+
+  useEffect(() => {
+    console.log(review);
+
+    loadInitialData({
+      unitData: {
+        unit: review.unit._id,
+        command: review.command._id,
+        division: !!review.division ? review.division._id : null,
+        brigade: !!review.brigade ? review.brigade._id : null,
+      },
+      scores: review.scores,
+      summary: review.Summary,
+    });
+
+    setNames(() => {
+      return {
+        unit: review.unit.name,
+        command: review.command.name,
+        division: !!review.division ? review.division.name : null,
+        brigade: !!review.brigade ? review.brigade.name : null,
+      };
+    });
+  }, []);
+
   let stage = useMemo(() => null, [step]);
+
   switch (props.step) {
     case 0:
-      stage = <ChooseUnit {...props} />;
+      stage = <ChooseUnit {...props} names={names} />;
       break;
     case 1:
       stage = (
@@ -107,4 +141,4 @@ const NewReviewSelector = (props) => {
   return stage;
 };
 
-export default React.memo(NewReviewSelector);
+export default React.memo(EditReviewSelector);

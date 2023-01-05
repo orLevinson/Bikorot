@@ -242,7 +242,7 @@ export const ReviewContextProvider = (props) => {
     try {
       const response = await sendRequest(
         `${process.env.NEXT_PUBLIC_API_ADDRESS}api/reviews/${reviewId}`,
-        "POST",
+        "PATCH",
         JSON.stringify(body),
         {
           "Content-Type": "application/json",

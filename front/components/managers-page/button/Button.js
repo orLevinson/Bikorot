@@ -169,7 +169,7 @@ const Button = (props) => {
           <MenuItem
             onClick={() => {
               handleClose();
-              router.push("/reviewers/" + id);
+              router.replace("/reviewers/" + id)
             }}
           >
             צפה בביקורות של המשתמש
