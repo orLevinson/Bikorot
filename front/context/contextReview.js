@@ -16,6 +16,7 @@ export const reviewContextData = createContext({
   clearContext: () => {},
   loadInitialData: () => {},
   sendReview: () => {},
+  editReview: () => {},
   changeUnit: () => {},
   changeSubject1: () => {},
   changeSubject2: () => {},
@@ -208,6 +209,65 @@ export const ReviewContextProvider = (props) => {
     return body;
   };
 
+  const editReviewHandler = async (authorId,reviewId, userToken) => {
+    // check if unit and command is not empty
+
+    if (
+      !reviewData.unitData.unit ||
+      reviewData.unitData.unit === "" ||
+      !reviewData.unitData.command ||
+      reviewData.unitData.command === ""
+    ) {
+      // console.log(reviewContext);
+      // openModal("danger", "אנא הזן יחידה");
+      throw new Error("קרתה שגיאה במהלך עדכון הביקורת");
+    }
+
+    const body = {
+      author: authorId,
+      unit: reviewData.unitData.unit,
+      command: reviewData.unitData.command,
+      division: !!reviewData.unitData.division
+        ? reviewData.unitData.division
+        : null,
+      brigade: !!reviewData.unitData.brigade
+        ? reviewData.unitData.brigade
+        : null,
+      scores: reviewData.scores,
+      Summary: reviewData.summary,
+    };
+
+    console.log(body);
+
+    try {
+      const response = await sendRequest(
+        `${process.env.NEXT_PUBLIC_API_ADDRESS}api/reviews/${reviewId}`,
+        "POST",
+        JSON.stringify(body),
+        {
+          "Content-Type": "application/json",
+          Authorization: userToken,
+        }
+      );
+      if (!!response.success) {
+        // openModal("success", "הביקורת נוספה בהצלחה");
+        // setLoading(false);
+        // reviewContext.clearContext();
+        clearContextHandler();
+        // router.push("/dashboard");
+      } else {
+        throw new Error("קרתה תקלה במהלך עדכון הביקורת");
+      }
+    } catch (err) {
+      clearError();
+      // openModal("danger", "קרתה תקלה במהלך שליחת הביקורת");
+      // setLoading(false);
+      throw new Error("קרתה תקלה במהלך עדכון הביקורת");
+    }
+
+    return body;
+  };
+
   return (
     <reviewContextData.Provider
       value={{
@@ -216,6 +276,7 @@ export const ReviewContextProvider = (props) => {
         changeUnit: changUnitHandler,
         clearContext: clearContextHandler,
         sendReview: sendReviewHandler,
+        editReview:editReviewHandler,
         changeSubject1: changeSubject1Handler,
         changeSubject2: changeSubject2Handler,
         changeSubject3: changeSubject3Handler,

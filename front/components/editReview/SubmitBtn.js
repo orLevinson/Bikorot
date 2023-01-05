@@ -6,7 +6,7 @@ import { reviewContextData } from "../../context/contextReview";
 
 const SubmitBtn = (props) => {
   const [loading, setLoading] = useState(false);
-  const { sendReview } = useContext(reviewContextData);
+  const { editReview } = useContext(reviewContextData);
   const { userData } = useContext(contextData);
   const router = useRouter();
 
@@ -14,20 +14,24 @@ const SubmitBtn = (props) => {
   const submitHandler = async () => {
     setLoading(true);
     try {
-      const body = await sendReview(userData.id, userData.token);
+      const body = await editReview(
+        props.authorId,
+        props.reviewId,
+        userData.token
+      );
       console.log(body);
-      props.openModal("success", "הביקורת נוספה בהצלחה");
+      props.openModal("success", "הביקורת נערכה בהצלחה");
       setLoading(false);
       router.push("/dashboard");
     } catch (err) {
-      props.openModal("danger", "יצירת הביקורת נכשלה");
+      props.openModal("danger", "עדכון הביקורת נכשל");
       setLoading(false);
     }
   };
 
   return (
     <Button disabled={loading} onClick={submitHandler}>
-      {!loading ? "סיים" : "בטעינה"}
+      {!loading ? "עדכן" : "בטעינה"}
     </Button>
   );
 };
