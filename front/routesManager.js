@@ -4,6 +4,7 @@ import Table from "@material-ui/icons/TableChart";
 import Speed from "@material-ui/icons/Speed";
 import Note from "@material-ui/icons/Note";
 import Add from "@material-ui/icons/Add";
+import Numbers from "@material-ui/icons/FormatListNumbered"
 
 const dashboardRoutes = [
   {
@@ -41,6 +42,13 @@ const dashboardRoutes = [
     icon: Add,
     layout: "/newReview",
   },
+  {
+    path: "/",
+    name: "changeValues",
+    rtlName: "שנה אחוזים",
+    icon: Numbers,
+    layout: "/changeValues",
+  }
 ];
 
 export default dashboardRoutes;

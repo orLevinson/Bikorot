@@ -1,7 +1,7 @@
 const template = {
   subject1: {
     category1: {
-      title: "נושא",
+      title: "זה הנושא הראשון",
       questions: [
         {
           text: "שאלה",
