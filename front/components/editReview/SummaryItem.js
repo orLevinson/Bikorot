@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import RegularButton from "../CustomButtons/Button";
 import CustomInput from "../CustomInput/CustomInput";
 import GridContainer from "../Grid/GridContainer";
 import GridItem from "../Grid/GridItem";
@@ -6,15 +7,20 @@ import GridItem from "../Grid/GridItem";
 function SummaryItem(props) {
   const [value, setValue] = useState(props.textValue);
 
-  useEffect(() => {
-    const debounce = setTimeout(() => {
-      props.changeHandler(value, props.subject);
-    }, 500);
+  // debounce option
+  // useEffect(() => {
+  //   const debounce = setTimeout(() => {
+  //     props.changeHandler(value, props.subject);
+  //   }, 500);
 
-    return () => {
-      clearTimeout(debounce);
-    };
-  }, [value]);
+  //   return () => {
+  //     clearTimeout(debounce);
+  //   };
+  // }, [value]);
+
+  const saveHandler = () => {
+    props.changeHandler(value, props.subject);
+  };
 
   return (
     <div style={{ margin: 15 }}>
@@ -37,6 +43,11 @@ function SummaryItem(props) {
             }}
             noMarginTop={true}
           />
+        </GridItem>
+        <GridItem xs={3} md={3} sm={6}>
+          <RegularButton color={"rose"} onClick={saveHandler} fullWidth>
+            שמור תשובה
+          </RegularButton>
         </GridItem>
       </GridContainer>
     </div>

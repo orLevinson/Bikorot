@@ -164,6 +164,7 @@ function RTLPage(props) {
                     "ציון סופי",
                   ]}
                   tableData={reviewsToShow}
+                  isBodyClickable={true}
                 />
               </CardBody>
             </Card>

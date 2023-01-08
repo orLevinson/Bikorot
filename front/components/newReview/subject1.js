@@ -115,7 +115,7 @@ export default function Subject1(props) {
                                 "text"
                               );
                             }}
-                            question={question.text}
+                            question={(qIndex+1) + ". " + question.text}
                           />
                         </Card>
                       </GridItem>

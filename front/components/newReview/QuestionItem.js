@@ -10,27 +10,37 @@ const QuestionItem = (props) => {
   const [score, setScore] = useState(valueScore);
   const [text, setText] = useState(valueText);
 
-  useEffect(() => {
-    const debounce = setTimeout(() => {
-      if (score !== valueScore) {
-        changeValueScore(score);
-      }
-    }, 500);
-    return () => {
-      clearTimeout(debounce);
-    };
-  }, [score]);
+  const saveHandler = () => {
+    if (score !== valueScore) {
+      changeValueScore(score);
+    }
+    if (text !== valueText) {
+      changeValueText(text);
+    }
+  };
 
-  useEffect(() => {
-    const debounce = setTimeout(() => {
-      if (text !== valueText) {
-        changeValueText(text);
-      }
-    }, 500);
-    return () => {
-      clearTimeout(debounce);
-    };
-  }, [text]);
+  // a debounce option
+  // useEffect(() => {
+  //   const debounce = setTimeout(() => {
+  //     if (score !== valueScore) {
+  //       changeValueScore(score);
+  //     }
+  //   }, 500);
+  //   return () => {
+  //     clearTimeout(debounce);
+  //   };
+  // }, [score]);
+
+  // useEffect(() => {
+  //   const debounce = setTimeout(() => {
+  //     if (text !== valueText) {
+  //       changeValueText(text);
+  //     }
+  //   }, 500);
+  //   return () => {
+  //     clearTimeout(debounce);
+  //   };
+  // }, [text]);
 
   return (
     <div style={{ margin: 15 }}>
@@ -70,7 +80,11 @@ const QuestionItem = (props) => {
             </RegularButton>
           </a>
         </GridItem>
-        <GridItem xs={4} md={4} sm={4}></GridItem>
+        <GridItem xs={3} md={3} sm={3}>
+          <RegularButton color={"rose"} onClick={saveHandler} fullWidth>
+            שמור תשובה
+          </RegularButton>
+        </GridItem>
         <GridItem xs={12} md={12} sm={12}>
           <CustomInput
             labelText={"פירוט"}

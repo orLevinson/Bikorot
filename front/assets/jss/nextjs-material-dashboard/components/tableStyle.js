@@ -69,6 +69,9 @@ const tableStyle = (theme) => ({
     outline: "none",
     verticalAlign: "middle",
   },
+  tableBodyClickable:{
+    cursor:"pointer"
+  },
   tableBodyRow: {
     height: "48px",
     color: "inherit",

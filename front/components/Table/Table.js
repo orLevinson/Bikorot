@@ -16,7 +16,7 @@ export default function CustomTable(props) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const { tableHead, tableData, tableHeaderColor } = props;
+  const { tableHead, tableData, tableHeaderColor, isBodyClickable } = props;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -29,8 +29,7 @@ export default function CustomTable(props) {
 
   return (
     <div className={classes.tableResponsive}>
-      <Table className={classes.table}
-      padding="checkbox">
+      <Table className={classes.table} padding="checkbox">
         {tableHead !== undefined ? (
           <TableHead className={classes[tableHeaderColor + "TableHeader"]}>
             <TableRow className={classes.tableHeadRow}>
@@ -52,7 +51,14 @@ export default function CustomTable(props) {
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((prop, key) => {
               return (
-                <TableRow key={key} className={classes.tableBodyRow}>
+                <TableRow
+                  key={key}
+                  className={
+                    classes.tableBodyRow + !!isBodyClickable
+                      ? classes.tableBodyClickable
+                      : null
+                  }
+                >
                   {prop.map((prop, key) => {
                     return (
                       <TableCell className={classes.tableCell} key={key}>
@@ -98,4 +104,5 @@ CustomTable.propTypes = {
   ]),
   tableHead: PropTypes.arrayOf(PropTypes.string),
   tableData: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+  isBodyClickable: PropTypes.bool,
 };
