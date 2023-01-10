@@ -52,7 +52,7 @@ const styles = {
 };
 
 function RTLPage(props) {
-  const route = useRouter();
+  const router = useRouter();
   const useStyles = makeStyles(styles);
   const Context = useContext(contextData);
   const classes = useStyles();

@@ -4,7 +4,8 @@ import Table from "@material-ui/icons/TableChart";
 import Speed from "@material-ui/icons/Speed";
 import Note from "@material-ui/icons/Note";
 import Add from "@material-ui/icons/Add";
-import Numbers from "@material-ui/icons/FormatListNumbered"
+import Numbers from "@material-ui/icons/FormatListNumbered";
+import Backup from "@material-ui/icons/Backup";
 
 const dashboardRoutes = [
   {
@@ -48,7 +49,14 @@ const dashboardRoutes = [
     rtlName: "שנה אחוזים",
     icon: Numbers,
     layout: "/changeValues",
-  }
+  },
+  {
+    path: "/",
+    name: "changeFiles",
+    rtlName: "שנה קבצים",
+    icon: Backup,
+    layout: "/changeFiles",
+  },
 ];
 
 export default dashboardRoutes;
