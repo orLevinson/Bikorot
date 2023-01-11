@@ -178,7 +178,6 @@ export const ReviewContextProvider = (props) => {
       Summary: reviewData.summary,
     };
 
-    console.log(body);
 
     try {
       const response = await sendRequest(
@@ -236,8 +235,6 @@ export const ReviewContextProvider = (props) => {
       scores: reviewData.scores,
       Summary: reviewData.summary,
     };
-
-    console.log(body);
 
     try {
       const response = await sendRequest(

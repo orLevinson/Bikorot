@@ -19,7 +19,6 @@ const SubmitBtn = (props) => {
         props.reviewId,
         userData.token
       );
-      console.log(body);
       props.openModal("success", "הביקורת נערכה בהצלחה");
       setLoading(false);
       router.push("/dashboard");

@@ -35,8 +35,6 @@ const steps = [
 ];
 
 function HorizontalLinearStepper(props) {
-console.log(props);
-
   const { classes } = props;
   const router = useRouter();
   const Context = useContext(contextData);

@@ -71,7 +71,6 @@ function RTLPage() {
   });
 
   const Context = useContext(contextData);
-  console.log(Context);
 
   const openModal = (color, text) => {
     setModalState({

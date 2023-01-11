@@ -15,7 +15,6 @@ const SubmitBtn = (props) => {
     setLoading(true);
     try {
       const body = await sendReview(userData.id, userData.token);
-      console.log(body);
       props.openModal("success", "הביקורת נוספה בהצלחה");
       setLoading(false);
       router.push("/dashboard");

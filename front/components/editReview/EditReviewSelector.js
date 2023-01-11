@@ -20,7 +20,6 @@ const EditReviewSelector = (props) => {
   });
 
   useEffect(() => {
-    console.log(review);
 
     loadInitialData({
       unitData: {

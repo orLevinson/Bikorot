@@ -153,8 +153,6 @@ const getReviewsByAuthor = async (req, res, next) => {
     });
 
     reviews = reviews.filter((i) => {
-      console.log(i.author);
-      console.log(authorId);
       return !!i.author && i.author._id.equals(authorId);
     });
   }
@@ -592,7 +590,6 @@ const checkUserAuthEdit = async (req, res, next) => {
       user.perms !== "global" &&
       user.perms !== "manager")
   ) {
-    console.log(user.perms);
     const error = new HttpError(
       "You aren't authorized to make changed to that review",
       401
@@ -642,7 +639,6 @@ const editReview = async (req, res, next) => {
   // in case of editing of the units
 
   if (!!reviewInfo.unit && !storedReview.unit._id.equals(reviewInfo.unit)) {
-    console.log(storedReview.unit._id.equals(reviewInfo.unit));
     // check if the units info that was entered was correct
     try {
       previousUnit = await Unit.findOne({ _id: storedReview.unit._id });

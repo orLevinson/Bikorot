@@ -65,7 +65,6 @@ const ChooseUnit = (props) => {
         const commandIndex = fetchRes.findIndex(
           (command) => command._id === reviewData.unitData.command
         );
-        console.log(commandIndex);
         if (commandIndex >= 0) {
           setCurrentCommandIndex(commandIndex);
         }
@@ -102,7 +101,6 @@ const ChooseUnit = (props) => {
       !!currentCommandIndex
     ) {
       setOgda(reviewData.unitData.division);
-      console.log(currentCommandIndex);
       const divisionIndex = fetchRes[currentCommandIndex].divisions.findIndex(
         (division) => division._id === reviewData.unitData.division
       );
@@ -142,7 +140,6 @@ const ChooseUnit = (props) => {
       // if (divisionIndex >= 0) {
       //   setCurrentDivisionIndex(divisionIndex);
       // }
-      console.log({ currentBrigadeIndex });
       const brigadeIndex = fetchRes[currentCommandIndex].divisions[
         currentDivisionIndex
       ].brigades.findIndex(

@@ -101,7 +101,6 @@ function RTLPage(props) {
           Authorization: Context.userData.token,
         }
       );
-      console.log(response);
       if (!!response.success && !!response.users) {
         const newUserArr = [];
         response.users.forEach((user) => {
@@ -157,7 +156,6 @@ function RTLPage(props) {
   }, [Context, getUsers]);
 
   const sortUsers = (name = "", num = "") => {
-    console.log(usersList.length);
     if (name === "" && num === "") {
       setUsersListToShow([...usersList]);
     }
@@ -170,7 +168,6 @@ function RTLPage(props) {
           return false;
         })
       );
-      console.log(usersList.length);
     }
     if (name === "" && num !== "") {
       setUsersListToShow(
