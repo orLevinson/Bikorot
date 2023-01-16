@@ -471,6 +471,21 @@ const addReview = async (req, res, next) => {
     return next(error);
   }
 
+  // if the input given to the post-nir features aren't right
+  // return an error
+
+  if (
+    !Array.isArray(reviewInfo.table) ||
+    !Array.isArray(reviewInfo.reviewed) ||
+    !Array.isArray(reviewInfo.tagAlong) ||
+    !reviewInfo.sumUp ||
+    !Array.isArray(reviewInfo.preserve) ||
+    !Array.isArray(reviewInfo.change)
+  ) {
+    const error = new HttpError("please enter the right inputs", 500);
+    return next(error);
+  }
+
   // now we have the total score and the scores of each
   // subject calculated, time to make a review Object
 
@@ -534,6 +549,12 @@ const addReview = async (req, res, next) => {
         score: cleanedSubjectScoreObj["subject5"],
       },
     },
+    table: reviewInfo.table,
+    reviewed: reviewInfo.reviewed,
+    tagAlong: reviewInfo.tagAlong,
+    sumUp: reviewInfo.sumUp,
+    preserve: reviewInfo.preserve,
+    change: reviewInfo.change,
     Score: totalScore,
   });
 
@@ -914,6 +935,19 @@ const editReview = async (req, res, next) => {
     storedReview.brigade = newUnit.brigade;
   }
 
+  // validate the post-nir feature's input
+  if (
+    !Array.isArray(reviewInfo.table) ||
+    !Array.isArray(reviewInfo.reviewed) ||
+    !Array.isArray(reviewInfo.tagAlong) ||
+    !reviewInfo.sumUp ||
+    !Array.isArray(reviewInfo.preserve) ||
+    !Array.isArray(reviewInfo.change)
+  ) {
+    const error = new HttpError("please enter the right inputs", 500);
+    return next(error);
+  }
+
   storedReview.scores = reviewInfo.scores;
   storedReview.Summary = {
     subject1: {
@@ -967,6 +1001,12 @@ const editReview = async (req, res, next) => {
       score: cleanedSubjectScoreObj["subject5"],
     },
   };
+  storedReview.table = reviewInfo.table;
+  storedReview.reviewed = reviewInfo.reviewed;
+  storedReview.tagAlong = reviewInfo.tagAlong;
+  storedReview.sumUp = reviewInfo.sumUp;
+  storedReview.preserve = reviewInfo.preserve;
+  storedReview.change = reviewInfo.change;
   storedReview.Score = totalScore;
 
   try {

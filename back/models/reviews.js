@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 
 const unitSchema = new Schema({
   dateCreated: { type: Date, required: true },
-  author: { type: mongoose.Types.ObjectId, required: true, ref: "User"},
+  author: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
   unit: {
     type: mongoose.Types.ObjectId,
     required: true,
@@ -255,6 +255,28 @@ const unitSchema = new Schema({
       score: { type: Number, required: true },
     },
   },
+  // 2 dimensional array of strings for the table with max items of 5
+  table: [
+    {
+      type: [{ type: String }],
+      minItems: 5,
+      maxItems: 5,
+    },
+  ],
+  // the people being reviewed
+  reviewed: [
+    { name: { type: String }, rank: { type: String }, job: { type: String } },
+  ],
+  // tagged along the way
+  tagAlong: [
+    { name: { type: String }, rank: { type: String }, job: { type: String } },
+  ],
+  // sum up paragraph
+  sumUp: { type: String },
+  // what to preserve
+  preserve: [{ type: String }],
+  // what to change
+  change: [{ type: String }],
   Score: { type: Number, required: true },
 });
 
